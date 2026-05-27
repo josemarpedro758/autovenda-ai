@@ -6,6 +6,8 @@ const app = express();
 app.use(express.json());
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
+const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
 
 app.get("/", (req, res) => {
   res.send("AutoVenda IA Online 🚀");
@@ -18,11 +20,14 @@ app.post("/webhook", async (req, res) => {
     const message =
       req.body.data?.message?.conversation || "";
 
+    const remoteJid =
+      req.body.data?.key?.remoteJid || "";
+
     if (!message) {
       return res.sendStatus(200);
     }
 
-    console.log("Mensagem recebida:", message);
+    console.log("Mensagem:", message);
 
     const aiResponse = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -32,7 +37,7 @@ app.post("/webhook", async (req, res) => {
           {
             role: "system",
             content:
-              "Você é a AutoVenda IA, uma atendente virtual profissional que vende produtos automaticamente, conversa naturalmente e responde clientes brasileiros e angolanos."
+              "Você é a AutoVenda IA, uma atendente virtual profissional especialista em vendas automáticas no WhatsApp. Você conversa como humana, convence clientes, responde naturalmente e vende produtos."
           },
           {
             role: "user",
@@ -51,11 +56,21 @@ app.post("/webhook", async (req, res) => {
     const resposta =
       aiResponse.data.choices[0].message.content;
 
-    console.log("Resposta IA:", resposta);
+    await axios.post(
+      `${EVOLUTION_API_URL}/message/sendText/autovendaia`,
+      {
+        number: remoteJid,
+        text: resposta
+      },
+      {
+        headers: {
+          apikey: EVOLUTION_API_KEY,
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-    return res.status(200).json({
-      reply: resposta
-    });
+    return res.sendStatus(200);
 
   } catch (error) {
 
