@@ -13,21 +13,27 @@ const products = [
     name: "Tênis Nike Air",
     price: "45.000 Kz",
     description:
-      "Tênis premium confortável, estiloso e resistente."
+      "Tênis premium confortável, estiloso e resistente.",
+    image:
+      "https://i.imgur.com/8Km9tLL.jpg"
   },
 
   {
     name: "iPhone 13 Pro",
     price: "650.000 Kz",
     description:
-      "Smartphone premium da Apple com câmera profissional."
+      "Smartphone premium da Apple com câmera profissional.",
+    image:
+      "https://i.imgur.com/ZANVnHE.jpg"
   },
 
   {
     name: "Fone Bluetooth",
     price: "15.000 Kz",
     description:
-      "Fone sem fio com som de alta qualidade."
+      "Fone sem fio com som de alta qualidade.",
+    image:
+      "https://i.imgur.com/QCNbOAo.jpg"
   }
 
 ];
@@ -62,13 +68,9 @@ app.post("/webhook", async (req, res) => {
         {
           role: "system",
           content:
-`Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, simpática, estratégica e especialista em vendas automáticas no WhatsApp.
+`Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana e especialista em vendas automáticas.
 
-Você conversa naturalmente com clientes de Angola e do Brasil usando linguagem humana, amigável e convincente.
-
-Você deve agir como uma vendedora premium extremamente inteligente.
-
-Esses são os produtos disponíveis:
+Produtos disponíveis:
 
 ${products.map(product =>
 `Produto: ${product.name}
@@ -76,22 +78,7 @@ Preço: ${product.price}
 Descrição: ${product.description}`
 ).join("\n\n")}
 
-REGRAS IMPORTANTES:
-
-- Sempre tente fechar a venda.
-- Seja natural e humana.
-- Nunca diga que é inteligência artificial.
-- Sempre recomende produtos.
-- Crie urgência moderada.
-- Destaque benefícios.
-- Incentive pagamento na entrega.
-- Mantenha o cliente interessado.
-- Seja persuasiva sem parecer forçada.
-- Responda de forma curta, elegante e profissional.
-- Use emojis moderadamente.
-- Faça o cliente sentir confiança.
-
-Seu objetivo principal é vender.`
+Seu objetivo é vender produtos, convencer clientes e responder naturalmente como humana.`
         }
       ];
 
@@ -124,8 +111,6 @@ Seu objetivo principal é vender.`
       content: resposta
     });
 
-    console.log("Resposta IA:", resposta);
-
     await axios.post(
       `${EVOLUTION_API_URL}/message/sendText/autovendaia`,
       {
@@ -139,6 +124,35 @@ Seu objetivo principal é vender.`
         }
       }
     );
+
+    const lowerMessage = message.toLowerCase();
+
+    for (const product of products) {
+
+      if (
+        lowerMessage.includes(product.name.toLowerCase())
+      ) {
+
+        await axios.post(
+          `${EVOLUTION_API_URL}/message/sendMedia/autovendaia`,
+          {
+            number: remoteJid,
+            mediatype: "image",
+            media: product.image,
+            caption:
+              `${product.name}\nPreço: ${product.price}`
+          },
+          {
+            headers: {
+              apikey: EVOLUTION_API_KEY,
+              "Content-Type": "application/json"
+            }
+          }
+        );
+
+      }
+
+    }
 
     return res.sendStatus(200);
 
