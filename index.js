@@ -5,6 +5,8 @@ const app = express();
 
 app.use(express.json());
 
+const conversations = {};
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
@@ -29,21 +31,28 @@ app.post("/webhook", async (req, res) => {
 
     console.log("Mensagem recebida:", message);
 
+    if (!conversations[remoteJid]) {
+
+      conversations[remoteJid] = [
+        {
+          role: "system",
+          content:
+            "Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, simpática e persuasiva. Você conversa naturalmente com clientes do Brasil e Angola usando linguagem simples, amigável e convincente. Seu objetivo é vender produtos, responder dúvidas, manter o cliente interessado e fechar vendas. Nunca diga que é robô ou inteligência artificial."
+        }
+      ];
+
+    }
+
+    conversations[remoteJid].push({
+      role: "user",
+      content: message
+    });
+
     const openaiResponse = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
         model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-              "Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, simpática e persuasiva. Você conversa naturalmente com clientes do Brasil e Angola usando linguagem simples, amigável e convincente. Seu objetivo é vender produtos, responder dúvidas, manter o cliente interessado e fechar vendas. Nunca diga que é robô ou inteligência artificial."
-          },
-          {
-            role: "user",
-            content: message
-          }
-        ]
+        messages: conversations[remoteJid]
       },
       {
         headers: {
@@ -55,6 +64,11 @@ app.post("/webhook", async (req, res) => {
 
     const resposta =
       openaiResponse.data.choices[0].message.content;
+
+    conversations[remoteJid].push({
+      role: "assistant",
+      content: resposta
+    });
 
     console.log("Resposta IA:", resposta);
 
