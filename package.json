@@ -1,7 +1,7 @@
 {
   "name": "autovenda-ia",
   "version": "1.0.0",
-  "description": "AutoVenda IA WhatsApp SaaS",
+  "description": "AutoVenda IA WhatsApp",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
