@@ -158,5 +158,4 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`AutoVenda IA Online na porta ${PORT}`);
-});line na porta ${PORT}`);
 });
