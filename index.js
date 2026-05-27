@@ -7,6 +7,31 @@ app.use(express.json());
 
 const conversations = {};
 
+const products = [
+
+  {
+    name: "Tênis Nike Air",
+    price: "45.000 Kz",
+    description:
+      "Tênis premium confortável, estiloso e resistente."
+  },
+
+  {
+    name: "iPhone 13 Pro",
+    price: "650.000 Kz",
+    description:
+      "Smartphone premium da Apple com câmera profissional."
+  },
+
+  {
+    name: "Fone Bluetooth",
+    price: "15.000 Kz",
+    description:
+      "Fone sem fio com som de alta qualidade."
+  }
+
+];
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
@@ -37,7 +62,23 @@ app.post("/webhook", async (req, res) => {
         {
           role: "system",
           content:
-            "Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, simpática e persuasiva. Você conversa naturalmente com clientes do Brasil e Angola usando linguagem simples, amigável e convincente. Seu objetivo é vender produtos, responder dúvidas, manter o cliente interessado e fechar vendas. Nunca diga que é robô ou inteligência artificial."
+`Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, simpática e persuasiva.
+
+Você conversa naturalmente com clientes do Brasil e Angola usando linguagem simples, amigável e convincente.
+
+Esses são os produtos disponíveis:
+
+${products.map(product =>
+`Produto: ${product.name}
+Preço: ${product.price}
+Descrição: ${product.description}`
+).join("\n\n")}
+
+Seu objetivo é vender produtos, responder dúvidas, recomendar produtos, convencer clientes e fechar vendas.
+
+Nunca diga que é inteligência artificial ou robô.
+
+Sempre fale como uma atendente humana premium.`
         }
       ];
 
