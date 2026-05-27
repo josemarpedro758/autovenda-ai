@@ -1,9 +1,16 @@
 const express = require("express");
 const axios = require("axios");
+const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
 app.use(express.json());
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const conversations = {};
 const followUps = {};
@@ -18,7 +25,7 @@ const products = [
     description:
       "Tênis premium confortável, estiloso e resistente.",
     image:
-      "https://i.imgur.com/8Km9tLL.jpg"
+      "https://res.cloudinary.com/demo/image/upload/sample.jpg"
   },
 
   {
@@ -28,17 +35,7 @@ const products = [
     description:
       "Smartphone premium da Apple com câmera profissional.",
     image:
-      "https://i.imgur.com/ZANVnHE.jpg"
-  },
-
-  {
-    id: 3,
-    name: "Fone Bluetooth",
-    price: "15.000 Kz",
-    description:
-      "Fone sem fio com som de alta qualidade.",
-    image:
-      "https://i.imgur.com/QCNbOAo.jpg"
+      "https://res.cloudinary.com/demo/image/upload/sample.jpg"
   }
 
 ];
@@ -59,6 +56,38 @@ app.get("/admin/clients", (req, res) => {
   res.json(clients);
 });
 
+app.post("/upload", async (req, res) => {
+
+  try {
+
+    const imageUrl =
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff";
+
+    const uploadResult =
+      await cloudinary.uploader.upload(
+        imageUrl,
+        {
+          folder: "autovendaia"
+        }
+      );
+
+    return res.json({
+      success: true,
+      image: uploadResult.secure_url
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success: false
+    });
+
+  }
+
+});
+
 app.post("/webhook", async (req, res) => {
 
   try {
@@ -72,8 +101,6 @@ app.post("/webhook", async (req, res) => {
     if (!message || !remoteJid) {
       return res.sendStatus(200);
     }
-
-    console.log("Mensagem recebida:", message);
 
     const clientExists = clients.find(
       client => client.number === remoteJid
@@ -103,7 +130,7 @@ app.post("/webhook", async (req, res) => {
         {
           role: "system",
           content:
-`Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana e especialista em vendas automáticas.
+`Você é a AutoVenda IA, uma atendente virtual extremamente profissional e especialista em vendas automáticas.
 
 Produtos disponíveis:
 
@@ -113,9 +140,7 @@ Preço: ${product.price}
 Descrição: ${product.description}`
 ).join("\n\n")}
 
-Seu objetivo é vender produtos, convencer clientes e responder naturalmente como humana.
-
-Sempre tente fechar vendas.`
+Seu objetivo é vender produtos e convencer clientes naturalmente.`
         }
       ];
 
@@ -162,64 +187,6 @@ Sempre tente fechar vendas.`
       }
     );
 
-    const lowerMessage = message.toLowerCase();
-
-    for (const product of products) {
-
-      if (
-        lowerMessage.includes(product.name.toLowerCase())
-      ) {
-
-        await axios.post(
-          `${EVOLUTION_API_URL}/message/sendMedia/autovendaia`,
-          {
-            number: remoteJid,
-            mediatype: "image",
-            media: product.image,
-            caption:
-              `${product.name}\nPreço: ${product.price}`
-          },
-          {
-            headers: {
-              apikey: EVOLUTION_API_KEY,
-              "Content-Type": "application/json"
-            }
-          }
-        );
-
-      }
-
-    }
-
-    followUps[remoteJid] = setTimeout(async () => {
-
-      try {
-
-        await axios.post(
-          `${EVOLUTION_API_URL}/message/sendText/autovendaia`,
-          {
-            number: remoteJid,
-            text:
-              "Olá 😊 Só passando para saber se ainda tens interesse no produto. Posso te ajudar com mais alguma informação?"
-          },
-          {
-            headers: {
-              apikey: EVOLUTION_API_KEY,
-              "Content-Type": "application/json"
-            }
-          }
-        );
-
-      } catch (error) {
-
-        console.log(
-          error?.response?.data || error.message
-        );
-
-      }
-
-    }, 300000);
-
     return res.sendStatus(200);
 
   } catch (error) {
@@ -238,4 +205,5 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`AutoVenda IA Online na porta ${PORT}`);
+});ne na porta ${PORT}`);
 });
