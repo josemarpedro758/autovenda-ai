@@ -1,6 +1,8 @@
 const express = require("express");
 const axios = require("axios");
 const cloudinary = require("cloudinary").v2;
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 
@@ -12,6 +14,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+const SECRET_KEY = "autovendaia_secret";
+
+const adminUser = {
+  email: "admin@autovendaia.com",
+  password: bcrypt.hashSync("123456", 10)
+};
+
 const products = [
   {
     id: 1,
@@ -20,19 +29,41 @@ const products = [
     description: "Tênis premium confortável.",
     image:
       "https://res.cloudinary.com/demo/image/upload/sample.jpg"
-  },
-
-  {
-    id: 2,
-    name: "iPhone 13 Pro",
-    price: "650.000 Kz",
-    description: "iPhone premium Apple.",
-    image:
-      "https://res.cloudinary.com/demo/image/upload/sample.jpg"
   }
 ];
 
 const clients = [];
+
+function authMiddleware(req, res, next) {
+
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+
+    return res.status(401).json({
+      error: "Token não enviado"
+    });
+
+  }
+
+  const token =
+    authHeader.split(" ")[1];
+
+  try {
+
+    jwt.verify(token, SECRET_KEY);
+
+    next();
+
+  } catch {
+
+    return res.status(401).json({
+      error: "Token inválido"
+    });
+
+  }
+
+}
 
 app.get("/", (req, res) => {
 
@@ -40,17 +71,58 @@ app.get("/", (req, res) => {
 
 });
 
-app.get("/admin/products", (req, res) => {
+app.post("/login", async (req, res) => {
 
-  res.json(products);
+  const { email, password } = req.body;
+
+  if (
+    email !== adminUser.email ||
+    !bcrypt.compareSync(
+      password,
+      adminUser.password
+    )
+  ) {
+
+    return res.status(401).json({
+      error: "Credenciais inválidas"
+    });
+
+  }
+
+  const token = jwt.sign(
+    { email },
+    SECRET_KEY,
+    {
+      expiresIn: "7d"
+    }
+  );
+
+  return res.json({
+    success: true,
+    token
+  });
 
 });
 
-app.get("/admin/clients", (req, res) => {
+app.get(
+  "/admin/products",
+  authMiddleware,
+  (req, res) => {
 
-  res.json(clients);
+    res.json(products);
 
-});
+  }
+);
+
+app.get(
+  "/admin/clients",
+  authMiddleware,
+  (req, res) => {
+
+    res.json(clients);
+
+  }
+);
 
 app.get("/upload", async (req, res) => {
 
@@ -70,8 +142,6 @@ app.get("/upload", async (req, res) => {
     });
 
   } catch (error) {
-
-    console.log(error);
 
     return res.status(500).json({
       success: false,
