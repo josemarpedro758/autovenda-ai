@@ -18,18 +18,18 @@ app.post("/webhook", async (req, res) => {
   try {
 
     const message =
-      req.body.data?.message?.conversation || "";
+      req.body?.data?.message?.conversation || "";
 
     const remoteJid =
-      req.body.data?.key?.remoteJid || "";
+      req.body?.data?.key?.remoteJid || "";
 
-    if (!message) {
+    if (!message || !remoteJid) {
       return res.sendStatus(200);
     }
 
-    console.log("Mensagem:", message);
+    console.log("Mensagem recebida:", message);
 
-    const aiResponse = await axios.post(
+    const openaiResponse = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
         model: "gpt-4o-mini",
@@ -37,8 +37,9 @@ app.post("/webhook", async (req, res) => {
           {
             role: "system",
             content:
-              "content:
-"Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, inteligente e persuasiva. Você conversa naturalmente com clientes do Brasil e Angola usando linguagem simples, amigável e convincente. Seu objetivo é vender produtos, responder dúvidas, manter o cliente interessado e fechar vendas. Nunca diga que é robô ou inteligência artificial. Sempre fale como uma atendente humana premium. Seja simpática, rápida, estratégica e natural."{
+              "Você é a AutoVenda IA, uma atendente virtual extremamente profissional, humana, simpática e persuasiva. Você conversa naturalmente com clientes do Brasil e Angola usando linguagem simples, amigável e convincente. Seu objetivo é vender produtos, responder dúvidas, manter o cliente interessado e fechar vendas. Nunca diga que é robô ou inteligência artificial."
+          },
+          {
             role: "user",
             content: message
           }
@@ -53,7 +54,9 @@ app.post("/webhook", async (req, res) => {
     );
 
     const resposta =
-      aiResponse.data.choices[0].message.content;
+      openaiResponse.data.choices[0].message.content;
+
+    console.log("Resposta IA:", resposta);
 
     await axios.post(
       `${EVOLUTION_API_URL}/message/sendText/autovendaia`,
@@ -83,6 +86,8 @@ app.post("/webhook", async (req, res) => {
 
 });
 
-app.listen(3000, () => {
-  console.log("AutoVenda IA Online 🚀");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`AutoVenda IA Online na porta ${PORT}`);
 });
