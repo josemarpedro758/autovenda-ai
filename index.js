@@ -1,13 +1,12 @@
 const express = require("express");
 const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
 
 const app = express();
 
 app.use(express.json());
 
 const conversations = {};
+const followUps = {};
 
 const products = [
 
@@ -64,6 +63,10 @@ app.post("/webhook", async (req, res) => {
 
     console.log("Mensagem recebida:", message);
 
+    if (followUps[remoteJid]) {
+      clearTimeout(followUps[remoteJid]);
+    }
+
     if (!conversations[remoteJid]) {
 
       conversations[remoteJid] = [
@@ -80,7 +83,9 @@ Preço: ${product.price}
 Descrição: ${product.description}`
 ).join("\n\n")}
 
-Seu objetivo é vender produtos, convencer clientes e responder naturalmente como humana.`
+Seu objetivo é vender produtos, convencer clientes e responder naturalmente como humana.
+
+Sempre tente manter o cliente interessado.`
         }
       ];
 
@@ -156,51 +161,40 @@ Seu objetivo é vender produtos, convencer clientes e responder naturalmente com
 
     }
 
-    if (
-      lowerMessage.includes("áudio") ||
-      lowerMessage.includes("audio")
-    ) {
+    followUps[remoteJid] = setTimeout(async () => {
 
-      const audioResponse = await axios.post(
-        "https://api.openai.com/v1/audio/speech",
-        {
-          model: "tts-1",
-          voice: "nova",
-          input: resposta
-        },
-        {
-          responseType: "arraybuffer",
-          headers: {
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
-            "Content-Type": "application/json"
+      try {
+
+        await axios.post(
+          `${EVOLUTION_API_URL}/message/sendText/autovendaia`,
+          {
+            number: remoteJid,
+            text:
+              "Olá 😊 Só passando para saber se ainda tens interesse no produto. Posso te ajudar com mais alguma informação?"
+          },
+          {
+            headers: {
+              apikey: EVOLUTION_API_KEY,
+              "Content-Type": "application/json"
+            }
           }
-        }
-      );
+        );
 
-      const audioPath =
-        path.join(__dirname, "audio.mp3");
+        console.log(
+          "Follow-up enviado para:",
+          remoteJid
+        );
 
-      fs.writeFileSync(
-        audioPath,
-        audioResponse.data
-      );
+      } catch (error) {
 
-      await axios.post(
-        `${EVOLUTION_API_URL}/message/sendMedia/autovendaia`,
-        {
-          number: remoteJid,
-          mediatype: "audio",
-          media: audioPath
-        },
-        {
-          headers: {
-            apikey: EVOLUTION_API_KEY,
-            "Content-Type": "application/json"
-          }
-        }
-      );
+        console.log(
+          "Erro follow-up:",
+          error?.response?.data || error.message
+        );
 
-    }
+      }
+
+    }, 300000);
 
     return res.sendStatus(200);
 
