@@ -7,10 +7,12 @@ app.use(express.json());
 
 const conversations = {};
 const followUps = {};
+const clients = [];
 
 const products = [
 
   {
+    id: 1,
     name: "Tênis Nike Air",
     price: "45.000 Kz",
     description:
@@ -20,6 +22,7 @@ const products = [
   },
 
   {
+    id: 2,
     name: "iPhone 13 Pro",
     price: "650.000 Kz",
     description:
@@ -29,6 +32,7 @@ const products = [
   },
 
   {
+    id: 3,
     name: "Fone Bluetooth",
     price: "15.000 Kz",
     description:
@@ -47,6 +51,14 @@ app.get("/", (req, res) => {
   res.send("AutoVenda IA Online 🚀");
 });
 
+app.get("/admin/products", (req, res) => {
+  res.json(products);
+});
+
+app.get("/admin/clients", (req, res) => {
+  res.json(clients);
+});
+
 app.post("/webhook", async (req, res) => {
 
   try {
@@ -62,6 +74,24 @@ app.post("/webhook", async (req, res) => {
     }
 
     console.log("Mensagem recebida:", message);
+
+    const clientExists = clients.find(
+      client => client.number === remoteJid
+    );
+
+    if (!clientExists) {
+
+      clients.push({
+        number: remoteJid,
+        lastMessage: message,
+        createdAt: new Date()
+      });
+
+    } else {
+
+      clientExists.lastMessage = message;
+
+    }
 
     if (followUps[remoteJid]) {
       clearTimeout(followUps[remoteJid]);
@@ -85,7 +115,7 @@ Descrição: ${product.description}`
 
 Seu objetivo é vender produtos, convencer clientes e responder naturalmente como humana.
 
-Sempre tente manter o cliente interessado.`
+Sempre tente fechar vendas.`
         }
       ];
 
@@ -180,15 +210,9 @@ Sempre tente manter o cliente interessado.`
           }
         );
 
-        console.log(
-          "Follow-up enviado para:",
-          remoteJid
-        );
-
       } catch (error) {
 
         console.log(
-          "Erro follow-up:",
           error?.response?.data || error.message
         );
 
