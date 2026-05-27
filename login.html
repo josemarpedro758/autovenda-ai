@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login AutoVenda IA</title>
+
+<style>
+
+body{
+background:#0f172a;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.login-box{
+
+background:#1e293b;
+padding:40px;
+border-radius:16px;
+width:350px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+
+}
+
+h1{
+color:white;
+text-align:center;
+margin-bottom:30px;
+}
+
+input{
+
+width:100%;
+padding:15px;
+margin-bottom:15px;
+border:none;
+border-radius:10px;
+background:#334155;
+color:white;
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:white;
+font-size:16px;
+cursor:pointer;
+
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+#error{
+color:red;
+margin-top:15px;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>AutoVenda IA 🚀</h1>
+
+<input
+type="email"
+id="email"
+placeholder="Email"
+/>
+
+<input
+type="password"
+id="password"
+placeholder="Senha"
+/>
+
+<button onclick="login()">
+Entrar
+</button>
+
+<div id="error"></div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://autovenda-ai.onrender.com";
+
+async function login(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+const response = await fetch(
+API_URL + "/login",
+{
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+email,
+password
+})
+
+}
+);
+
+const data = await response.json();
+
+if(data.success){
+
+localStorage.setItem(
+"token",
+data.token
+);
+
+window.location.href =
+"/dashboard.html";
+
+}else{
+
+document.getElementById("error")
+.innerText =
+"Email ou senha inválidos";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
