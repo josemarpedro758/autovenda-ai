@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AutoVenda IA Dashboard</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#111827;
+padding:20px;
+font-size:28px;
+font-weight:bold;
+text-align:center;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:14px;
+margin-bottom:20px;
+}
+
+.card h2{
+margin-top:0;
+}
+
+.product{
+background:#334155;
+padding:15px;
+border-radius:12px;
+margin-top:15px;
+}
+
+.client{
+background:#334155;
+padding:15px;
+border-radius:12px;
+margin-top:15px;
+}
+
+img{
+width:120px;
+border-radius:12px;
+margin-top:10px;
+}
+
+.logout{
+
+background:red;
+border:none;
+padding:12px 20px;
+border-radius:10px;
+color:white;
+cursor:pointer;
+margin-top:20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+AutoVenda IA Dashboard 🚀
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Produtos</h2>
+
+<div id="products"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Clientes</h2>
+
+<div id="clients"></div>
+
+</div>
+
+<button
+class="logout"
+onclick="logout()"
+>
+Sair
+</button>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://autovenda-ai.onrender.com";
+
+const token =
+localStorage.getItem("token");
+
+if(!token){
+
+window.location.href =
+"/login.html";
+
+}
+
+async function loadProducts(){
+
+const response = await fetch(
+
+API_URL + "/admin/products",
+
+{
+headers:{
+Authorization:
+"Bearer " + token
+}
+}
+
+);
+
+const products =
+await response.json();
+
+const productsDiv =
+document.getElementById("products");
+
+productsDiv.innerHTML = "";
+
+products.forEach(product => {
+
+productsDiv.innerHTML += `
+
+<div class="product">
+
+<h3>${product.name}</h3>
+
+<p>${product.price}</p>
+
+<p>${product.description}</p>
+
+<img src="${product.image}" />
+
+</div>
+
+`;
+
+});
+
+}
+
+async function loadClients(){
+
+const response = await fetch(
+
+API_URL + "/admin/clients",
+
+{
+headers:{
+Authorization:
+"Bearer " + token
+}
+}
+
+);
+
+const clients =
+await response.json();
+
+const clientsDiv =
+document.getElementById("clients");
+
+clientsDiv.innerHTML = "";
+
+clients.forEach(client => {
+
+clientsDiv.innerHTML += `
+
+<div class="client">
+
+<p>
+<strong>Número:</strong>
+${client.number}
+</p>
+
+<p>
+<strong>Última mensagem:</strong>
+${client.lastMessage}
+</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+function logout(){
+
+localStorage.removeItem("token");
+
+window.location.href =
+"/login.html";
+
+}
+
+loadProducts();
+loadClients();
+
+</script>
+
+</body>
+</html>
