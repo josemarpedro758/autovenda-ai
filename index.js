@@ -1,5 +1,7 @@
 const express = require("express");
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 
@@ -151,6 +153,52 @@ Seu objetivo é vender produtos, convencer clientes e responder naturalmente com
         );
 
       }
+
+    }
+
+    if (
+      lowerMessage.includes("áudio") ||
+      lowerMessage.includes("audio")
+    ) {
+
+      const audioResponse = await axios.post(
+        "https://api.openai.com/v1/audio/speech",
+        {
+          model: "tts-1",
+          voice: "nova",
+          input: resposta
+        },
+        {
+          responseType: "arraybuffer",
+          headers: {
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      const audioPath =
+        path.join(__dirname, "audio.mp3");
+
+      fs.writeFileSync(
+        audioPath,
+        audioResponse.data
+      );
+
+      await axios.post(
+        `${EVOLUTION_API_URL}/message/sendMedia/autovendaia`,
+        {
+          number: remoteJid,
+          mediatype: "audio",
+          media: audioPath
+        },
+        {
+          headers: {
+            apikey: EVOLUTION_API_KEY,
+            "Content-Type": "application/json"
+          }
+        }
+      );
 
     }
 
