@@ -1,21 +1,27 @@
 {
   "name": "autovenda-ia",
   "version": "1.0.0",
-  "description": "AutoVenda IA",
+  "description": "AutoVenda IA Global Platform",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "whatsapp",
+    "openai",
+    "ecommerce",
+    "automation",
+    "ai"
+  ],
+  "author": "AutoVenda IA",
+  "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.2",
+    "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.2.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.5-lts.1"
-    "pg": "^8.11.5",
-    
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.5"
   }
 }
