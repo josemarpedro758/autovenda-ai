@@ -2,61 +2,143 @@
 <html lang="pt">
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>AutoVenda IA Dashboard</title>
+<title>AutoVenda IA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-body{
+*{
 margin:0;
-font-family:Arial;
-background:#0f172a;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:'Inter',sans-serif;
+background:#050816;
 color:white;
+display:flex;
+min-height:100vh;
+overflow-x:hidden;
+
 }
 
 .sidebar{
 
-width:250px;
-height:100vh;
-background:#111827;
+width:260px;
+background:rgba(255,255,255,0.04);
+backdrop-filter:blur(20px);
+border-right:1px solid rgba(255,255,255,0.05);
+
+padding:30px 20px;
 position:fixed;
-left:0;
-top:0;
-padding:20px;
+height:100vh;
 
 }
 
-.sidebar h1{
+.logo{
 
 font-size:24px;
-margin-bottom:40px;
+font-weight:700;
+margin-bottom:50px;
+
+background:linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 
 }
 
-.sidebar button{
+.menu button{
 
 width:100%;
-padding:15px;
-margin-top:10px;
+padding:16px;
+margin-bottom:12px;
+
+background:rgba(255,255,255,0.05);
+
 border:none;
-border-radius:10px;
-background:#2563eb;
+border-radius:16px;
+
 color:white;
+font-size:15px;
+font-weight:500;
+
 cursor:pointer;
+transition:0.3s;
+
+}
+
+.menu button:hover{
+
+background:rgba(255,255,255,0.1);
+transform:translateY(-2px);
 
 }
 
 .main{
 
-margin-left:270px;
-padding:20px;
+margin-left:260px;
+padding:30px;
+width:100%;
 
 }
 
-.cards{
+.topbar{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+margin-bottom:30px;
+
+}
+
+.topbar h1{
+
+font-size:32px;
+font-weight:700;
+
+}
+
+.topbar p{
+
+color:#94a3b8;
+margin-top:8px;
+
+}
+
+.profile{
+
+width:50px;
+height:50px;
+border-radius:50%;
+
+background:linear-gradient(
+135deg,
+#7c3aed,
+#06b6d4
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-weight:700;
+
+}
+
+.stats{
 
 display:grid;
 grid-template-columns:
@@ -69,51 +151,123 @@ margin-bottom:30px;
 
 .card{
 
-background:#1e293b;
-padding:20px;
-border-radius:15px;
+background:rgba(255,255,255,0.05);
+
+border:1px solid rgba(255,255,255,0.06);
+
+backdrop-filter:blur(20px);
+
+padding:25px;
+border-radius:24px;
+
+transition:0.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+border-color:
+rgba(124,58,237,0.5);
+
+}
+
+.card span{
+
+font-size:14px;
+color:#94a3b8;
 
 }
 
 .card h2{
 
-margin:0;
-font-size:18px;
-
-}
-
-.card p{
-
-font-size:32px;
+font-size:42px;
 margin-top:10px;
-font-weight:bold;
 
 }
 
 .section{
 
-background:#1e293b;
-padding:20px;
-border-radius:15px;
+background:rgba(255,255,255,0.04);
+
+border:1px solid rgba(255,255,255,0.05);
+
+backdrop-filter:blur(20px);
+
+padding:25px;
+border-radius:24px;
+
+margin-bottom:25px;
+
+}
+
+.section h3{
+
+font-size:20px;
 margin-bottom:20px;
 
 }
 
-.product,
-.client{
+.item{
 
-background:#334155;
-padding:15px;
-border-radius:12px;
-margin-top:15px;
+background:rgba(255,255,255,0.03);
+
+padding:18px;
+border-radius:18px;
+
+margin-bottom:15px;
+
+border:1px solid rgba(255,255,255,0.04);
 
 }
 
-img{
+.item img{
 
-width:100px;
-border-radius:10px;
+width:90px;
+border-radius:14px;
 margin-top:10px;
+
+}
+
+.item strong{
+
+font-size:18px;
+
+}
+
+.logout{
+
+margin-top:40px;
+background:linear-gradient(
+135deg,
+#ef4444,
+#dc2626
+)!important;
+
+}
+
+@media(max-width:900px){
+
+.sidebar{
+
+width:100%;
+height:auto;
+position:relative;
+
+}
+
+.main{
+
+margin-left:0;
+
+}
+
+body{
+
+flex-direction:column;
+
+}
 
 }
 
@@ -125,31 +279,78 @@ margin-top:10px;
 
 <div class="sidebar">
 
-<h1>AutoVenda IA 🚀</h1>
+<div class="logo">
+AutoVenda IA
+</div>
 
-<button onclick="logout()">
-Sair
+<div class="menu">
+
+<button>
+📊 Dashboard
 </button>
+
+<button>
+🛍 Produtos
+</button>
+
+<button>
+👥 Clientes
+</button>
+
+<button>
+📈 Analytics
+</button>
+
+<button class="logout"
+onclick="logout()">
+🚪 Sair
+</button>
+
+</div>
 
 </div>
 
 <div class="main">
 
-<div class="cards">
+<div class="topbar">
+
+<div>
+
+<h1>
+Dashboard
+</h1>
+
+<p>
+Bem-vindo ao painel premium da AutoVenda IA
+</p>
+
+</div>
+
+<div class="profile">
+AI
+</div>
+
+</div>
+
+<div class="stats">
 
 <div class="card">
 
-<h2>Total Produtos</h2>
+<span>Total Produtos</span>
 
-<p id="totalProducts">0</p>
+<h2 id="totalProducts">
+0
+</h2>
 
 </div>
 
 <div class="card">
 
-<h2>Total Clientes</h2>
+<span>Total Clientes</span>
 
-<p id="totalClients">0</p>
+<h2 id="totalClients">
+0
+</h2>
 
 </div>
 
@@ -157,7 +358,9 @@ Sair
 
 <div class="section">
 
-<h2>Produtos</h2>
+<h3>
+Produtos
+</h3>
 
 <div id="products"></div>
 
@@ -165,7 +368,9 @@ Sair
 
 <div class="section">
 
-<h2>Clientes</h2>
+<h3>
+Clientes
+</h3>
 
 <div id="clients"></div>
 
@@ -222,13 +427,19 @@ products.forEach(product=>{
 
 productsDiv.innerHTML += `
 
-<div class="product">
+<div class="item">
 
-<h3>${product.name}</h3>
+<strong>
+${product.name}
+</strong>
 
-<p>${product.price}</p>
+<p>
+${product.price}
+</p>
 
-<p>${product.description}</p>
+<p>
+${product.description}
+</p>
 
 <img src="${product.image}" />
 
@@ -274,7 +485,7 @@ clients.forEach(client=>{
 
 clientsDiv.innerHTML += `
 
-<div class="client">
+<div class="item">
 
 <p>
 <strong>Número:</strong>
