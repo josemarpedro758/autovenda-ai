@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const path = require("path");
 const multer = require("multer");
+const { Pool } = require("pg");
 
 const app = express();
 
@@ -20,16 +21,27 @@ app.use(
   )
 );
 
+const pool = new Pool({
+
+connectionString:
+process.env.DATABASE_URL,
+
+ssl:{
+rejectUnauthorized:false
+}
+
+});
+
 cloudinary.config({
 
-  cloud_name:
-    process.env.CLOUDINARY_CLOUD_NAME,
+cloud_name:
+process.env.CLOUDINARY_CLOUD_NAME,
 
-  api_key:
-    process.env.CLOUDINARY_API_KEY,
+api_key:
+process.env.CLOUDINARY_API_KEY,
 
-  api_secret:
-    process.env.CLOUDINARY_API_SECRET
+api_secret:
+process.env.CLOUDINARY_API_SECRET
 
 });
 
@@ -49,9 +61,43 @@ bcrypt.hashSync(
 
 };
 
-let products = [];
+async function createTables(){
 
-let clientsMemory = {};
+await pool.query(`
+
+CREATE TABLE IF NOT EXISTS products(
+
+id SERIAL PRIMARY KEY,
+
+name TEXT,
+price TEXT,
+description TEXT,
+image TEXT
+
+)
+
+`);
+
+await pool.query(`
+
+CREATE TABLE IF NOT EXISTS clients(
+
+id SERIAL PRIMARY KEY,
+
+number TEXT UNIQUE,
+memory TEXT
+
+)
+
+`);
+
+console.log(
+"Banco conectado 🚀"
+);
+
+}
+
+createTables();
 
 function authMiddleware(
 req,
@@ -186,16 +232,23 @@ error:error.message
 app.get(
 "/admin/products",
 authMiddleware,
-(req,res)=>{
+async(req,res)=>{
 
-res.json(products);
+const result =
+await pool.query(
+"SELECT * FROM products ORDER BY id DESC"
+);
+
+res.json(
+result.rows
+);
 
 });
 
 app.post(
 "/admin/products",
 authMiddleware,
-(req,res)=>{
+async(req,res)=>{
 
 const {
 name,
@@ -204,25 +257,33 @@ description,
 image
 } = req.body;
 
-const newProduct = {
+const result =
+await pool.query(
 
-id:Date.now(),
+`
 
+INSERT INTO products
+(name,price,description,image)
+
+VALUES($1,$2,$3,$4)
+
+RETURNING *
+
+`,
+
+[
 name,
 price,
 description,
 image
+]
 
-};
-
-products.push(
-newProduct
 );
 
 return res.json({
 
 success:true,
-product:newProduct
+product:result.rows[0]
 
 });
 
@@ -231,15 +292,17 @@ product:newProduct
 app.delete(
 "/admin/products/:id",
 authMiddleware,
-(req,res)=>{
+async(req,res)=>{
 
 const id =
-Number(req.params.id);
+req.params.id;
 
-products =
-products.filter(
-product =>
-product.id !== id
+await pool.query(
+
+"DELETE FROM products WHERE id=$1",
+
+[id]
+
 );
 
 return res.json({
@@ -268,30 +331,54 @@ return res.sendStatus(200);
 
 }
 
-if(!clientsMemory[number]){
+const clientResult =
+await pool.query(
 
-clientsMemory[number] = {
+"SELECT * FROM clients WHERE number=$1",
 
-messages:[],
-preferences:[]
+[number]
 
-};
+);
+
+let memory = "";
+
+if(clientResult.rows.length > 0){
+
+memory =
+clientResult.rows[0].memory || "";
 
 }
 
-clientsMemory[number]
-.messages
-.push(message);
+memory += `\nCliente: ${message}`;
 
-const memory =
-clientsMemory[number]
-.messages
-.slice(-10)
-.join("\n");
+await pool.query(
+
+`
+
+INSERT INTO clients(number,memory)
+
+VALUES($1,$2)
+
+ON CONFLICT(number)
+
+DO UPDATE SET
+
+memory=$2
+
+`,
+
+[number,memory]
+
+);
+
+const productsResult =
+await pool.query(
+"SELECT * FROM products"
+);
 
 const productsText =
 
-products.map(product =>
+productsResult.rows.map(product =>
 
 `
 
@@ -327,39 +414,32 @@ content:
 
 Você é uma IA premium de vendas chamada AutoVenda IA.
 
-Você atende clientes pelo WhatsApp.
+Você vende produtos pelo WhatsApp.
 
-Você é moderna,
-humana,
-simpática,
-persuasiva
-e inteligente.
+Você é:
+
+- humana
+- simpática
+- moderna
+- profissional
+- persuasiva
 
 Você deve:
 
 - recomendar produtos
-- vender naturalmente
-- agir como humana
-- responder profissionalmente
-- lembrar conversas anteriores
-- lembrar preferências
+- lembrar conversas
+- lembrar clientes
+- responder naturalmente
+- agir como vendedora real
 - tentar fechar vendas
 
 Produtos disponíveis:
 
 ${productsText}
 
-Histórico recente do cliente:
+Histórico do cliente:
 
 ${memory}
-
-Sempre:
-
-- use linguagem moderna
-- seja amigável
-- use emojis moderadamente
-- recomende produtos relevantes
-- fale como atendente humana
 
 `
 
@@ -397,6 +477,24 @@ openaiResponse
 .choices[0]
 .message
 .content;
+
+memory += `\nIA: ${aiMessage}`;
+
+await pool.query(
+
+`
+
+UPDATE clients
+
+SET memory=$1
+
+WHERE number=$2
+
+`,
+
+[memory,number]
+
+);
 
 await axios.post(
 
@@ -438,6 +536,12 @@ const PORT =
 process.env.PORT || 3000;
 
 app.listen(PORT, ()=>{
+
+console.log(
+`AutoVenda IA Online na porta ${PORT}`
+);
+
+});
 
 console.log(
 `AutoVenda IA Online na porta ${PORT}`
