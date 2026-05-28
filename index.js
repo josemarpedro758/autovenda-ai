@@ -34,115 +34,115 @@ cloudinary.config({
 });
 
 const SECRET_KEY =
-  "autovendaia_secret";
+"autovendaia_secret";
 
 const adminUser = {
 
-  email:
-    "admin@autovendaia.com",
+email:
+"admin@autovendaia.com",
 
-  password:
-    bcrypt.hashSync(
-      "123456",
-      10
-    )
+password:
+bcrypt.hashSync(
+"123456",
+10
+)
 
 };
 
 let products = [];
 
+let clientsMemory = {};
+
 function authMiddleware(
-  req,
-  res,
-  next
+req,
+res,
+next
 ){
 
-  const authHeader =
-    req.headers.authorization;
+const authHeader =
+req.headers.authorization;
 
-  if(!authHeader){
+if(!authHeader){
 
-    return res.status(401).json({
-      error:
-        "Token não enviado"
-    });
+return res.status(401).json({
+error:"Token não enviado"
+});
 
-  }
+}
 
-  const token =
-    authHeader.split(" ")[1];
+const token =
+authHeader.split(" ")[1];
 
-  try{
+try{
 
-    jwt.verify(
-      token,
-      SECRET_KEY
-    );
+jwt.verify(
+token,
+SECRET_KEY
+);
 
-    next();
+next();
 
-  }catch{
+}catch{
 
-    return res.status(401).json({
-      error:
-        "Token inválido"
-    });
+return res.status(401).json({
+error:"Token inválido"
+});
 
-  }
+}
 
 }
 
 app.get("/", (req,res)=>{
 
-  res.send(
-    "AutoVenda IA Online 🚀"
-  );
+res.send(
+"AutoVenda IA Online 🚀"
+);
 
 });
 
 app.post("/login", async(req,res)=>{
 
-  const {
-    email,
-    password
-  } = req.body;
+const {
+email,
+password
+} = req.body;
 
-  if(
+if(
 
-    email !== adminUser.email ||
+email !== adminUser.email ||
 
-    !bcrypt.compareSync(
-      password,
-      adminUser.password
-    )
+!bcrypt.compareSync(
+password,
+adminUser.password
+)
 
-  ){
+){
 
-    return res.status(401).json({
-      error:
-        "Credenciais inválidas"
-    });
+return res.status(401).json({
+error:
+"Credenciais inválidas"
+});
 
-  }
+}
 
-  const token = jwt.sign(
+const token = jwt.sign(
 
-    { email },
+{ email },
 
-    SECRET_KEY,
+SECRET_KEY,
 
-    {
-      expiresIn:"7d"
-    }
+{
+expiresIn:"7d"
+}
 
-  );
+);
 
-  return res.json({
+return res.json({
 
-    success:true,
-    token
+success:true,
+token
 
-  });
+});
 
 });
 
@@ -268,6 +268,46 @@ return res.sendStatus(200);
 
 }
 
+if(!clientsMemory[number]){
+
+clientsMemory[number] = {
+
+messages:[],
+preferences:[]
+
+};
+
+}
+
+clientsMemory[number]
+.messages
+.push(message);
+
+const memory =
+clientsMemory[number]
+.messages
+.slice(-10)
+.join("\n");
+
+const productsText =
+
+products.map(product =>
+
+`
+
+Produto:
+${product.name}
+
+Preço:
+${product.price}
+
+Descrição:
+${product.description}
+
+`
+
+).join("\n");
+
 const openaiResponse =
 await axios.post(
 
@@ -284,18 +324,45 @@ role:"system",
 content:
 
 `
-Você é uma IA profissional de vendas.
 
-Seu nome é AutoVenda IA.
+Você é uma IA premium de vendas chamada AutoVenda IA.
 
-Você vende produtos pelo WhatsApp.
+Você atende clientes pelo WhatsApp.
 
-Seja educada,
-moderna,
+Você é moderna,
+humana,
+simpática,
 persuasiva
-e humana.
+e inteligente.
+
+Você deve:
+
+- recomendar produtos
+- vender naturalmente
+- agir como humana
+- responder profissionalmente
+- lembrar conversas anteriores
+- lembrar preferências
+- tentar fechar vendas
+
+Produtos disponíveis:
+
+${productsText}
+
+Histórico recente do cliente:
+
+${memory}
+
+Sempre:
+
+- use linguagem moderna
+- seja amigável
+- use emojis moderadamente
+- recomende produtos relevantes
+- fale como atendente humana
 
 `
+
 },
 
 {
@@ -337,11 +404,8 @@ await axios.post(
 
 {
 
-number:
-number,
-
-text:
-aiMessage
+number:number,
+text:aiMessage
 
 },
 
