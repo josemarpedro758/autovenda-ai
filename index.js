@@ -248,6 +248,128 @@ success:true
 
 });
 
+app.post(
+"/webhook",
+async(req,res)=>{
+
+try{
+
+const data = req.body;
+
+const message =
+data.data.message?.conversation;
+
+const number =
+data.data.key.remoteJid;
+
+if(!message){
+
+return res.sendStatus(200);
+
+}
+
+const openaiResponse =
+await axios.post(
+
+"https://api.openai.com/v1/chat/completions",
+
+{
+
+model:"gpt-4o-mini",
+
+messages:[
+
+{
+role:"system",
+content:
+
+`
+Você é uma IA profissional de vendas.
+
+Seu nome é AutoVenda IA.
+
+Você vende produtos pelo WhatsApp.
+
+Seja educada,
+moderna,
+persuasiva
+e humana.
+
+`
+},
+
+{
+role:"user",
+content:message
+}
+
+]
+
+},
+
+{
+
+headers:{
+
+Authorization:
+`Bearer ${process.env.OPENAI_API_KEY}`,
+
+"Content-Type":
+"application/json"
+
+}
+
+}
+
+);
+
+const aiMessage =
+
+openaiResponse
+.data
+.choices[0]
+.message
+.content;
+
+await axios.post(
+
+`${process.env.EVOLUTION_API_URL}/message/sendText/${process.env.EVOLUTION_INSTANCE}`,
+
+{
+
+number:
+number,
+
+text:
+aiMessage
+
+},
+
+{
+
+headers:{
+
+apikey:
+process.env.EVOLUTION_API_KEY
+
+}
+
+}
+
+);
+
+return res.sendStatus(200);
+
+}catch(error){
+
+console.log(error.message);
+
+return res.sendStatus(500);
+
+}
+
+});
+
 const PORT =
 process.env.PORT || 3000;
 
