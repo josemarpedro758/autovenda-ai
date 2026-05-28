@@ -1,824 +1,544 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+const express = require("express");
+const axios = require("axios");
+const cloudinary = require("cloudinary").v2;
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const path = require("path");
+const multer = require("multer");
+const { Pool } = require("pg");
 
-<title>AutoVenda IA • A Nova Geração de Compras Online</title>
+const app = express();
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+const upload = multer({
+  dest:"uploads/"
+});
 
-<style>
+app.use(express.json());
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
-
-body{
-
-background:
-linear-gradient(
-135deg,
-#050816,
-#0b1023,
-#121d3a
+app.use(
+  express.static(
+    path.join(__dirname)
+  )
 );
 
-overflow-x:hidden;
-color:white;
+const pool = new Pool({
 
+connectionString:
+process.env.DATABASE_URL,
+
+ssl:{
+rejectUnauthorized:false
 }
 
-body::before{
+});
 
-content:"";
+cloudinary.config({
 
-position:fixed;
+cloud_name:
+process.env.CLOUDINARY_CLOUD_NAME,
 
-width:700px;
-height:700px;
+api_key:
+process.env.CLOUDINARY_API_KEY,
 
-background:
-radial-gradient(
-circle,
-rgba(124,58,237,0.35),
-transparent 70%
+api_secret:
+process.env.CLOUDINARY_API_SECRET
+
+});
+
+const SECRET_KEY =
+"autovendaia_secret";
+
+const adminUser = {
+
+email:
+"admin@autovendaia.com",
+
+password:
+bcrypt.hashSync(
+"123456",
+10
+)
+
+};
+
+async function createTables(){
+
+await pool.query(`
+
+CREATE TABLE IF NOT EXISTS products(
+
+id SERIAL PRIMARY KEY,
+
+name TEXT,
+price TEXT,
+description TEXT,
+image TEXT
+
+)
+
+`);
+
+await pool.query(`
+
+CREATE TABLE IF NOT EXISTS clients(
+
+id SERIAL PRIMARY KEY,
+
+number TEXT UNIQUE,
+memory TEXT
+
+)
+
+`);
+
+console.log(
+"Banco conectado 🚀"
 );
 
-top:-200px;
-right:-200px;
+}
 
-z-index:-1;
+createTables();
+
+function authMiddleware(
+req,
+res,
+next
+){
+
+const authHeader =
+req.headers.authorization;
+
+if(!authHeader){
+
+return res.status(401).json({
+error:"Token não enviado"
+});
 
 }
 
-body::after{
+const token =
+authHeader.split(" ")[1];
 
-content:"";
+try{
 
-position:fixed;
-
-width:700px;
-height:700px;
-
-background:
-radial-gradient(
-circle,
-rgba(0,255,191,0.18),
-transparent 70%
+jwt.verify(
+token,
+SECRET_KEY
 );
 
-bottom:-300px;
-left:-300px;
+next();
 
-z-index:-1;
+}catch{
 
-}
-
-header{
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-padding:28px 8%;
-
-position:sticky;
-top:0;
-
-backdrop-filter:blur(18px);
-
-background:rgba(255,255,255,0.03);
-
-border-bottom:
-1px solid rgba(255,255,255,0.05);
-
-z-index:999;
+return res.status(401).json({
+error:"Token inválido"
+});
 
 }
 
-.logo{
+}
 
-font-size:30px;
-font-weight:900;
+app.get("/", (req,res)=>{
 
-background:
-linear-gradient(
-90deg,
-#6ee7ff,
-#7c3aed,
-#00ffbf
+res.send(
+"AutoVenda IA Online 🚀"
 );
 
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+});
+
+app.post("/login", async(req,res)=>{
+
+const {
+email,
+password
+} = req.body;
+
+if(
+
+email !== adminUser.email ||
+
+!bcrypt.compareSync(
+password,
+adminUser.password
+)
+
+){
+
+return res.status(401).json({
+error:
+"Credenciais inválidas"
+});
 
 }
 
-nav{
+const token = jwt.sign(
 
-display:flex;
-align-items:center;
-gap:22px;
+{ email },
 
+SECRET_KEY,
+
+{
+expiresIn:"7d"
 }
 
-nav a{
-
-text-decoration:none;
-color:#cbd5e1;
-
-font-weight:500;
-
-transition:0.3s;
-
-}
-
-nav a:hover{
-
-color:white;
-
-}
-
-.btn{
-
-padding:14px 22px;
-
-border-radius:16px;
-
-border:none;
-
-cursor:pointer;
-
-font-weight:700;
-
-font-size:14px;
-
-transition:0.3s;
-
-}
-
-.btn-login{
-
-background:rgba(255,255,255,0.08);
-
-color:white;
-
-}
-
-.btn-dashboard{
-
-background:
-linear-gradient(
-90deg,
-#7c3aed,
-#06b6d4
 );
 
-color:white;
+return res.json({
 
-box-shadow:
-0 10px 30px rgba(124,58,237,0.35);
+success:true,
+token
 
+});
+
+});
+
+app.post(
+"/upload-image",
+upload.single("image"),
+
+async(req,res)=>{
+
+try{
+
+const result =
+
+await cloudinary.uploader.upload(
+req.file.path,
+{
+folder:"autovendaia"
 }
-
-.btn:hover{
-
-transform:translateY(-3px);
-
-}
-
-.hero{
-
-min-height:100vh;
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-padding:0 8%;
-
-gap:60px;
-
-}
-
-.hero-text{
-
-max-width:650px;
-
-}
-
-.badge{
-
-display:inline-block;
-
-padding:10px 18px;
-
-background:rgba(255,255,255,0.08);
-
-border:
-1px solid rgba(255,255,255,0.08);
-
-border-radius:999px;
-
-margin-bottom:28px;
-
-font-size:14px;
-
-backdrop-filter:blur(12px);
-
-}
-
-.hero h1{
-
-font-size:72px;
-line-height:1.05;
-
-font-weight:900;
-
-margin-bottom:24px;
-
-}
-
-.gradient{
-
-background:
-linear-gradient(
-90deg,
-#6ee7ff,
-#7c3aed,
-#00ffbf
 );
 
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+return res.json({
+
+success:true,
+url:result.secure_url
+
+});
+
+}catch(error){
+
+return res.status(500).json({
+
+success:false,
+error:error.message
+
+});
 
 }
 
-.hero p{
-
-font-size:20px;
-
-line-height:1.7;
-
-color:#94a3b8;
-
-margin-bottom:35px;
-
-}
-
-.hero-buttons{
-
-display:flex;
-gap:18px;
-
-flex-wrap:wrap;
-
-}
-
-.hero-image{
-
-flex:1;
-display:flex;
-justify-content:center;
-
-}
-
-.hero-card{
-
-width:520px;
-
-background:rgba(255,255,255,0.06);
-
-border:
-1px solid rgba(255,255,255,0.08);
-
-backdrop-filter:blur(22px);
-
-border-radius:36px;
-
-padding:30px;
-
-box-shadow:
-0 20px 80px rgba(0,0,0,0.35);
-
-animation:float 5s ease-in-out infinite;
-
-}
-
-.hero-card img{
-
-width:100%;
-border-radius:24px;
-
-}
-
-.stats{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(220px,1fr));
-
-gap:24px;
-
-padding:80px 8%;
-
-}
-
-.stat{
-
-background:rgba(255,255,255,0.05);
-
-padding:32px;
-
-border-radius:30px;
-
-backdrop-filter:blur(20px);
-
-border:
-1px solid rgba(255,255,255,0.06);
-
-transition:0.3s;
-
-}
-
-.stat:hover{
-
-transform:translateY(-6px);
-
-}
-
-.stat h2{
-
-font-size:42px;
-
-margin-bottom:12px;
-
-}
-
-.features{
-
-padding:100px 8%;
-
-}
-
-.section-title{
-
-text-align:center;
-
-margin-bottom:70px;
-
-}
-
-.section-title h2{
-
-font-size:54px;
-margin-bottom:18px;
-
-}
-
-.section-title p{
-
-color:#94a3b8;
-font-size:18px;
-
-}
-
-.feature-grid{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(320px,1fr));
-
-gap:28px;
-
-}
-
-.feature{
-
-background:rgba(255,255,255,0.05);
-
-padding:34px;
-
-border-radius:30px;
-
-backdrop-filter:blur(18px);
-
-border:
-1px solid rgba(255,255,255,0.06);
-
-transition:0.3s;
-
-}
-
-.feature:hover{
-
-transform:translateY(-6px);
-
-}
-
-.feature h3{
-
-font-size:24px;
-
-margin:18px 0;
-
-}
-
-.feature p{
-
-color:#94a3b8;
-line-height:1.7;
-
-}
-
-.cta{
-
-padding:120px 8%;
-
-text-align:center;
-
-}
-
-.cta-box{
-
-background:
-linear-gradient(
-135deg,
-rgba(124,58,237,0.18),
-rgba(6,182,212,0.18)
+});
+
+app.get(
+"/admin/products",
+authMiddleware,
+async(req,res)=>{
+
+const result =
+await pool.query(
+"SELECT * FROM products ORDER BY id DESC"
 );
 
-border:
-1px solid rgba(255,255,255,0.08);
+res.json(
+result.rows
+);
 
-backdrop-filter:blur(22px);
+});
 
-padding:70px;
+app.post(
+"/admin/products",
+authMiddleware,
+async(req,res)=>{
 
-border-radius:40px;
+const {
+name,
+price,
+description,
+image
+} = req.body;
 
-}
+const result =
+await pool.query(
 
-.cta h2{
+`
 
-font-size:56px;
+INSERT INTO products
+(name,price,description,image)
 
-margin-bottom:24px;
+VALUES($1,$2,$3,$4)
 
-}
+RETURNING *
 
-.cta p{
+`,
 
-font-size:20px;
+[
+name,
+price,
+description,
+image
+]
 
-color:#cbd5e1;
+);
 
-margin-bottom:34px;
+return res.json({
 
-}
+success:true,
+product:result.rows[0]
 
-footer{
+});
 
-padding:40px 8%;
+});
 
-display:flex;
-justify-content:space-between;
-align-items:center;
+app.delete(
+"/admin/products/:id",
+authMiddleware,
+async(req,res)=>{
 
-border-top:
-1px solid rgba(255,255,255,0.05);
+const id =
+req.params.id;
 
-color:#94a3b8;
+await pool.query(
 
-}
+"DELETE FROM products WHERE id=$1",
 
-@keyframes float{
+[id]
 
-0%{
-transform:translateY(0px);
-}
+);
 
-50%{
-transform:translateY(-14px);
-}
+return res.json({
+success:true
+});
 
-100%{
-transform:translateY(0px);
-}
+});
 
-}
+app.post(
+"/webhook",
+async(req,res)=>{
 
-@media(max-width:1100px){
+try{
 
-.hero{
+const data = req.body;
 
-flex-direction:column;
-padding-top:120px;
+const message =
+data.data.message?.conversation;
 
-}
+const number =
+data.data.key.remoteJid;
 
-.hero h1{
+if(!message){
 
-font-size:52px;
-
-}
-
-.hero-card{
-
-width:100%;
-
-}
-
-header{
-
-padding:24px;
-
-}
-
-nav{
-
-display:none;
-
-}
+return res.sendStatus(200);
 
 }
 
-</style>
-</head>
+const clientResult =
+await pool.query(
 
-<body>
+"SELECT * FROM clients WHERE number=$1",
 
-<header>
+[number]
 
-<div class="logo">
-🚀 AutoVenda IA
-</div>
+);
 
-<nav>
+let memory = "";
 
-<a href="#">Início</a>
-<a href="#">IA</a>
-<a href="#">Analytics</a>
-<a href="#">WhatsApp</a>
-<a href="#">Automação</a>
+if(clientResult.rows.length > 0){
 
-<button class="btn btn-login"
-onclick="window.location.href='/login.html'">
-Entrar
-</button>
+memory =
+clientResult.rows[0].memory || "";
 
-<button class="btn btn-dashboard"
-onclick="window.location.href='/dashboard.html'">
-Dashboard
-</button>
+}
 
-</nav>
+memory += `\nCliente: ${message}`;
 
-</header>
+await pool.query(
 
-<section class="hero">
+`
 
-<div class="hero-text">
+INSERT INTO clients(number,memory)
 
-<div class="badge">
-🌍 Plataforma Global de Automação Inteligente
-</div>
+VALUES($1,$2)
 
-<h1>
+ON CONFLICT(number)
 
-A nova geração de
-<span class="gradient">
-compras online
-</span>
-no mundo.
+DO UPDATE SET
 
-</h1>
+memory=$2
 
-<p>
+`,
 
-Venda automaticamente no WhatsApp usando Inteligência Artificial.
-Automatize atendimento, recomendações, conversas, memória de clientes e vendas globais com tecnologia SaaS 2026.
+[number,memory]
 
-</p>
+);
 
-<div class="hero-buttons">
+const productsResult =
+await pool.query(
+"SELECT * FROM products"
+);
 
-<button class="btn btn-dashboard"
-onclick="window.location.href='/dashboard.html'">
-🚀 Começar Agora
-</button>
+const productsText =
 
-<button class="btn btn-login"
-onclick="window.location.href='/login.html'">
-🔐 Fazer Login
-</button>
+productsResult.rows.map(product =>
 
-</div>
+`
 
-</div>
+Produto:
+${product.name}
 
-<div class="hero-image">
+Preço:
+${product.price}
 
-<div class="hero-card">
+Descrição:
+${product.description}
 
-<img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1200&auto=format&fit=crop">
+`
 
-</div>
+).join("\n");
 
-</div>
+const openaiResponse =
+await axios.post(
 
-</section>
+"https://api.openai.com/v1/chat/completions",
 
-<section class="stats">
+{
 
-<div class="stat">
+model:"gpt-4o-mini",
 
-<h2>24/7</h2>
+messages:[
 
-<p>
-🤖 IA vendendo automaticamente
-</p>
+{
+role:"system",
+content:
 
-</div>
+`
 
-<div class="stat">
+Você é uma IA premium de vendas chamada AutoVenda IA.
 
-<h2>+500%</h2>
+Você vende produtos pelo WhatsApp.
 
-<p>
-📈 aumento de produtividade
-</p>
+Você é:
 
-</div>
+- humana
+- simpática
+- moderna
+- profissional
+- persuasiva
 
-<div class="stat">
+Você deve:
 
-<h2>Global</h2>
+- recomendar produtos
+- lembrar conversas
+- lembrar clientes
+- responder naturalmente
+- agir como vendedora real
+- tentar fechar vendas
 
-<p>
-🌎 vendas em qualquer país
-</p>
+Produtos disponíveis:
 
-</div>
+${productsText}
 
-<div class="stat">
+Histórico do cliente:
 
-<h2>2026</h2>
+${memory}
 
-<p>
-⚡ tecnologia SaaS premium
-</p>
+`
 
-</div>
+},
 
-</section>
+{
+role:"user",
+content:message
+}
 
-<section class="features">
+]
 
-<div class="section-title">
+},
 
-<h2>
-🔥 Recursos Premium
-</h2>
+{
 
-<p>
-Tecnologia moderna para negócios globais inteligentes
-</p>
+headers:{
 
-</div>
+Authorization:
+`Bearer ${process.env.OPENAI_API_KEY}`,
 
-<div class="feature-grid">
+"Content-Type":
+"application/json"
 
-<div class="feature">
+}
 
-<h3>
-🤖 Inteligência Artificial
-</h3>
+}
 
-<p>
+);
 
-A IA conversa naturalmente, recomenda produtos, lembra clientes e fecha vendas automaticamente.
+const aiMessage =
 
-</p>
+openaiResponse
+.data
+.choices[0]
+.message
+.content;
 
-</div>
+memory += `\nIA: ${aiMessage}`;
 
-<div class="feature">
+await pool.query(
 
-<h3>
-💬 WhatsApp Automático
-</h3>
+`
 
-<p>
+UPDATE clients
 
-Respostas automáticas profissionais integradas ao WhatsApp em tempo real.
+SET memory=$1
 
-</p>
+WHERE number=$2
 
-</div>
+`,
 
-<div class="feature">
+[memory,number]
 
-<h3>
-📈 Analytics Inteligente
-</h3>
+);
 
-<p>
+await axios.post(
 
-Dashboard premium com gráficos, estatísticas, clientes e crescimento empresarial.
+`${process.env.EVOLUTION_API_URL}/message/sendText/${process.env.EVOLUTION_INSTANCE}`,
 
-</p>
+{
 
-</div>
+number:number,
+text:aiMessage
 
-<div class="feature">
+},
 
-<h3>
-🌍 Escalável Globalmente
-</h3>
+{
 
-<p>
+headers:{
 
-Venda em qualquer país do mundo usando estrutura SaaS moderna e escalável.
+apikey:
+process.env.EVOLUTION_API_KEY
 
-</p>
+}
 
-</div>
+}
 
-<div class="feature">
+);
 
-<h3>
-☁️ Cloud Storage
-</h3>
+return res.sendStatus(200);
 
-<p>
+}catch(error){
 
-Upload inteligente de imagens usando Cloudinary profissional integrado.
+console.log(error.message);
 
-</p>
+return res.sendStatus(500);
 
-</div>
+}
 
-<div class="feature">
+});
 
-<h3>
-🔒 Segurança Premium
-</h3>
+const PORT =
+process.env.PORT || 3000;
 
-<p>
+app.listen(PORT, ()=>{
 
-Login seguro, autenticação JWT e backend empresarial moderno.
+console.log(
+`AutoVenda IA Online na porta ${PORT}`
+);
 
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="cta">
-
-<div class="cta-box">
-
-<h2>
-🚀 Transforme seu negócio com IA
-</h2>
-
-<p>
-
-Automatize vendas, clientes e atendimento usando tecnologia moderna de Inteligência Artificial.
-
-</p>
-
-<button class="btn btn-dashboard"
-onclick="window.location.href='/dashboard.html'">
-
-🌍 Entrar na Plataforma
-
-</button>
-
-</div>
-
-</section>
-
-<footer>
-
-<div>
-© 2026 AutoVenda IA
-</div>
-
-<div>
-SaaS Global Premium
-</div>
-
-</footer>
-
-</body>
-</html>
+});
