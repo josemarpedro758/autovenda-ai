@@ -11,7 +11,7 @@ content="width=device-width, initial-scale=1.0"/>
 <link rel="preconnect"
 href="https://fonts.googleapis.com">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
 rel="stylesheet">
 
 <style>
@@ -25,43 +25,67 @@ box-sizing:border-box;
 body{
 
 font-family:'Inter',sans-serif;
-background:#050816;
+background:#030712;
 color:white;
+overflow-x:hidden;
+
+}
+
+.background{
+
+position:fixed;
+inset:0;
+
+background-image:
+
+linear-gradient(
+rgba(3,7,18,0.78),
+rgba(3,7,18,0.92)
+),
+
+url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2070');
+
+background-size:cover;
+background-position:center;
+
+z-index:-1;
 
 }
 
 header{
 
-padding:30px;
-
 display:flex;
 justify-content:space-between;
 align-items:center;
 
-border-bottom:
-1px solid rgba(255,255,255,0.05);
+padding:28px 40px;
+
+position:sticky;
+top:0;
+
+backdrop-filter:blur(18px);
 
 background:
 rgba(255,255,255,0.03);
 
-backdrop-filter:blur(20px);
+border-bottom:
+1px solid rgba(255,255,255,0.05);
 
-position:sticky;
-top:0;
 z-index:100;
 
 }
 
 .logo{
 
-font-size:28px;
-font-weight:700;
+font-size:30px;
+font-weight:800;
 
 background:
 linear-gradient(
 90deg,
 #7c3aed,
-#06b6d4
+#06b6d4,
+#22c55e
 );
 
 -webkit-background-clip:text;
@@ -71,29 +95,103 @@ linear-gradient(
 
 .hero{
 
-padding:80px 30px;
+min-height:85vh;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+padding:60px 30px;
+
 text-align:center;
+
+}
+
+.hero-content{
+
+max-width:1000px;
+
+}
+
+.hero-badge{
+
+display:inline-block;
+
+padding:12px 22px;
+
+border-radius:999px;
+
+background:
+rgba(255,255,255,0.06);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+margin-bottom:30px;
+
+font-size:14px;
+
+color:#cbd5e1;
+
+backdrop-filter:blur(12px);
 
 }
 
 .hero h1{
 
-font-size:64px;
-font-weight:700;
+font-size:78px;
+line-height:1;
 
-max-width:900px;
-margin:auto;
+font-weight:800;
 
-line-height:1.1;
+margin-bottom:30px;
+
+letter-spacing:-3px;
+
+}
+
+.gradient{
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4,
+#22c55e
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 
 }
 
 .hero p{
 
-margin-top:20px;
+font-size:22px;
 
-font-size:20px;
-color:#94a3b8;
+line-height:1.7;
+
+color:#cbd5e1;
+
+max-width:850px;
+margin:auto;
+
+}
+
+.products-section{
+
+padding:40px 30px 100px;
+
+}
+
+.section-title{
+
+font-size:42px;
+font-weight:700;
+
+margin-bottom:40px;
+
+text-align:center;
 
 }
 
@@ -102,42 +200,51 @@ color:#94a3b8;
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,minmax(300px,1fr));
+repeat(auto-fit,minmax(320px,1fr));
 
-gap:25px;
+gap:30px;
 
-padding:30px;
+max-width:1500px;
+margin:auto;
 
 }
 
 .product{
 
 background:
-rgba(255,255,255,0.04);
+rgba(255,255,255,0.05);
 
 border:
-1px solid rgba(255,255,255,0.05);
+1px solid rgba(255,255,255,0.06);
 
-border-radius:28px;
+border-radius:30px;
 
 overflow:hidden;
 
-transition:0.3s;
+backdrop-filter:blur(18px);
 
-backdrop-filter:blur(20px);
+transition:0.4s;
 
 }
 
 .product:hover{
 
-transform:translateY(-6px);
+transform:
+translateY(-10px)
+scale(1.01);
+
+border-color:
+rgba(124,58,237,0.4);
+
+box-shadow:
+0 20px 60px rgba(124,58,237,0.15);
 
 }
 
 .product img{
 
 width:100%;
-height:280px;
+height:320px;
 
 object-fit:cover;
 
@@ -151,26 +258,27 @@ padding:25px;
 
 .product h2{
 
-font-size:24px;
-margin-bottom:10px;
+font-size:28px;
+margin-bottom:15px;
 
 }
 
 .product p{
 
 color:#cbd5e1;
-margin-top:10px;
 
-line-height:1.6;
+line-height:1.7;
+
+margin-bottom:20px;
 
 }
 
 .price{
 
-font-size:28px;
-font-weight:700;
+font-size:34px;
+font-weight:800;
 
-margin-top:20px;
+margin-bottom:20px;
 
 }
 
@@ -178,8 +286,6 @@ margin-top:20px;
 
 width:100%;
 padding:18px;
-
-margin-top:20px;
 
 border:none;
 border-radius:18px;
@@ -194,7 +300,7 @@ linear-gradient(
 color:white;
 
 font-size:16px;
-font-weight:600;
+font-weight:700;
 
 cursor:pointer;
 
@@ -204,16 +310,49 @@ transition:0.3s;
 
 .buy-btn:hover{
 
-transform:translateY(-2px);
+transform:translateY(-3px);
+
+opacity:0.95;
 
 }
 
 footer{
 
-padding:40px;
+padding:60px 30px;
+
 text-align:center;
 
-color:#64748b;
+color:#94a3b8;
+
+border-top:
+1px solid rgba(255,255,255,0.05);
+
+background:
+rgba(255,255,255,0.02);
+
+backdrop-filter:blur(12px);
+
+}
+
+@media(max-width:900px){
+
+.hero h1{
+
+font-size:52px;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+}
+
+header{
+
+padding:22px;
+
+}
 
 }
 
@@ -222,6 +361,8 @@ color:#64748b;
 </head>
 
 <body>
+
+<div class="background"></div>
 
 <header>
 
@@ -233,28 +374,52 @@ AutoVenda IA
 
 <section class="hero">
 
+<div class="hero-content">
+
+<div class="hero-badge">
+
+🚀 A nova geração de vendas inteligentes no mundo
+
+</div>
+
 <h1>
 
-A nova geração de compras online no Mundo.
+Transforme seu negócio com
+<span class="gradient">
+Inteligência Artificial.
+</span>
 
 </h1>
 
 <p>
 
-Produtos premium com atendimento inteligente no WhatsApp.
+Uma plataforma premium de vendas automáticas criada para empresas modernas, marcas globais e o futuro do comércio digital.
 
 </p>
 
+</div>
+
 </section>
 
-<section class="products"
+<section class="products-section">
+
+<h2 class="section-title">
+
+Produtos em destaque
+
+</h2>
+
+<div
+class="products"
 id="products">
+
+</div>
 
 </section>
 
 <footer>
 
-AutoVenda IA © 2026
+AutoVenda IA © 2026 — Global AI Commerce Platform
 
 </footer>
 
