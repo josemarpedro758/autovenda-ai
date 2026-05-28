@@ -4,8 +4,13 @@ const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const path = require("path");
+const multer = require("multer");
 
 const app = express();
+
+const upload = multer({
+  dest:"uploads/"
+});
 
 app.use(express.json());
 
@@ -16,6 +21,7 @@ app.use(
 );
 
 cloudinary.config({
+
   cloud_name:
     process.env.CLOUDINARY_CLOUD_NAME,
 
@@ -24,12 +30,14 @@ cloudinary.config({
 
   api_secret:
     process.env.CLOUDINARY_API_SECRET
+
 });
 
 const SECRET_KEY =
   "autovendaia_secret";
 
 const adminUser = {
+
   email:
     "admin@autovendaia.com",
 
@@ -38,24 +46,10 @@ const adminUser = {
       "123456",
       10
     )
+
 };
 
-let products = [
-
-  {
-    id:1,
-    name:"Tênis Nike Air",
-    price:"45.000 Kz",
-    description:
-      "Tênis premium confortável.",
-
-    image:
-      "https://res.cloudinary.com/demo/image/upload/sample.jpg"
-  }
-
-];
-
-const clients = [];
+let products = [];
 
 function authMiddleware(
   req,
@@ -152,90 +146,118 @@ app.post("/login", async(req,res)=>{
 
 });
 
-app.get(
-  "/admin/products",
-  authMiddleware,
-  (req,res)=>{
+app.post(
+"/upload-image",
+upload.single("image"),
 
-    res.json(products);
+async(req,res)=>{
 
-  }
+try{
+
+const result =
+
+await cloudinary.uploader.upload(
+req.file.path,
+{
+folder:"autovendaia"
+}
 );
+
+return res.json({
+
+success:true,
+url:result.secure_url
+
+});
+
+}catch(error){
+
+return res.status(500).json({
+
+success:false,
+error:error.message
+
+});
+
+}
+
+});
+
+app.get(
+"/admin/products",
+authMiddleware,
+(req,res)=>{
+
+res.json(products);
+
+});
 
 app.post(
-  "/admin/products",
-  authMiddleware,
-  async(req,res)=>{
+"/admin/products",
+authMiddleware,
+(req,res)=>{
 
-    const {
-      name,
-      price,
-      description,
-      image
-    } = req.body;
+const {
+name,
+price,
+description,
+image
+} = req.body;
 
-    const newProduct = {
+const newProduct = {
 
-      id:Date.now(),
+id:Date.now(),
 
-      name,
-      price,
-      description,
-      image
+name,
+price,
+description,
+image
 
-    };
+};
 
-    products.push(
-      newProduct
-    );
-
-    return res.json({
-
-      success:true,
-      product:newProduct
-
-    });
-
-  }
+products.push(
+newProduct
 );
+
+return res.json({
+
+success:true,
+product:newProduct
+
+});
+
+});
 
 app.delete(
-  "/admin/products/:id",
-  authMiddleware,
-  (req,res)=>{
+"/admin/products/:id",
+authMiddleware,
+(req,res)=>{
 
-    const id =
-      Number(req.params.id);
+const id =
+Number(req.params.id);
 
-    products =
-      products.filter(
-        product =>
-          product.id !== id
-      );
-
-    return res.json({
-      success:true
-    });
-
-  }
+products =
+products.filter(
+product =>
+product.id !== id
 );
 
-app.get(
-  "/admin/clients",
-  authMiddleware,
-  (req,res)=>{
+return res.json({
+success:true
+});
 
-    res.json(clients);
-
-  }
-);
+});
 
 const PORT =
-  process.env.PORT || 3000;
+process.env.PORT || 3000;
 
 app.listen(PORT, ()=>{
 
-  console.log(
+console.log(
+`AutoVenda IA Online na porta ${PORT}`
+);
+
+});
 
     `AutoVenda IA Online na porta ${PORT}`
 
