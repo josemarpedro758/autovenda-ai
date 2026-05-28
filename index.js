@@ -40,12 +40,12 @@ const adminUser = {
     )
 };
 
-const products = [
+let products = [
 
   {
-    id: 1,
-    name: "Tênis Nike Air",
-    price: "45.000 Kz",
+    id:1,
+    name:"Tênis Nike Air",
+    price:"45.000 Kz",
     description:
       "Tênis premium confortável.",
 
@@ -162,6 +162,64 @@ app.get(
   }
 );
 
+app.post(
+  "/admin/products",
+  authMiddleware,
+  async(req,res)=>{
+
+    const {
+      name,
+      price,
+      description,
+      image
+    } = req.body;
+
+    const newProduct = {
+
+      id:Date.now(),
+
+      name,
+      price,
+      description,
+      image
+
+    };
+
+    products.push(
+      newProduct
+    );
+
+    return res.json({
+
+      success:true,
+      product:newProduct
+
+    });
+
+  }
+);
+
+app.delete(
+  "/admin/products/:id",
+  authMiddleware,
+  (req,res)=>{
+
+    const id =
+      Number(req.params.id);
+
+    products =
+      products.filter(
+        product =>
+          product.id !== id
+      );
+
+    return res.json({
+      success:true
+    });
+
+  }
+);
+
 app.get(
   "/admin/clients",
   authMiddleware,
@@ -171,45 +229,6 @@ app.get(
 
   }
 );
-
-app.get("/upload", async(req,res)=>{
-
-  try{
-
-    const uploadResult =
-
-      await cloudinary
-      .uploader
-      .upload(
-
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-
-        {
-          folder:"autovendaia"
-        }
-
-      );
-
-    return res.json({
-
-      success:true,
-      image:
-        uploadResult.secure_url
-
-    });
-
-  }catch(error){
-
-    return res.status(500).json({
-
-      success:false,
-      error:error.message
-
-    });
-
-  }
-
-});
 
 const PORT =
   process.env.PORT || 3000;
