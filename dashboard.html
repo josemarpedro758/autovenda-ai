@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dashboard • AutoVenda IA</title>
@@ -10,6 +12,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
 <style>
 
@@ -22,45 +26,44 @@ font-family:'Inter',sans-serif;
 
 body{
 
+display:flex;
+
 background:
 linear-gradient(
 135deg,
-#050816,
+#020617,
 #0f172a,
 #111827
 );
 
 color:white;
 
-overflow-x:hidden;
-
-display:flex;
-
 min-height:100vh;
+
+overflow-x:hidden;
 
 }
 
 .sidebar{
 
-width:270px;
+width:280px;
 
-background:rgba(255,255,255,0.04);
+background:
+rgba(255,255,255,0.05);
 
 backdrop-filter:blur(20px);
 
 border-right:
-1px solid rgba(255,255,255,0.05);
+1px solid rgba(255,255,255,0.06);
 
 padding:30px;
-
-display:flex;
-flex-direction:column;
 
 }
 
 .logo{
 
-font-size:28px;
+font-size:32px;
+
 font-weight:900;
 
 margin-bottom:50px;
@@ -82,32 +85,34 @@ linear-gradient(
 
 display:flex;
 flex-direction:column;
-gap:16px;
+gap:15px;
 
 }
 
 .menu a{
 
 text-decoration:none;
+
 color:#cbd5e1;
 
-padding:16px 18px;
+padding:16px;
 
 border-radius:18px;
 
 transition:0.3s;
 
-font-weight:600;
+font-weight:700;
 
 }
 
 .menu a:hover{
 
-background:rgba(255,255,255,0.08);
+background:
+rgba(255,255,255,0.08);
 
 color:white;
 
-transform:translateX(4px);
+transform:translateX(5px);
 
 }
 
@@ -115,7 +120,7 @@ transform:translateX(4px);
 
 flex:1;
 
-padding:40px;
+padding:35px;
 
 }
 
@@ -129,18 +134,19 @@ margin-bottom:35px;
 
 }
 
-.title h1{
+.topbar h1{
 
 font-size:42px;
-font-weight:900;
 
-margin-bottom:10px;
+font-weight:900;
 
 }
 
-.title p{
+.topbar p{
 
 color:#94a3b8;
+
+margin-top:10px;
 
 }
 
@@ -155,11 +161,11 @@ gap:15px;
 
 border:none;
 
-padding:14px 22px;
+padding:15px 24px;
 
-border-radius:16px;
+border-radius:18px;
 
-font-weight:700;
+font-weight:800;
 
 cursor:pointer;
 
@@ -178,14 +184,12 @@ linear-gradient(
 
 color:white;
 
-box-shadow:
-0 10px 30px rgba(124,58,237,0.35);
-
 }
 
 .secondary{
 
-background:rgba(255,255,255,0.08);
+background:
+rgba(255,255,255,0.08);
 
 color:white;
 
@@ -193,7 +197,7 @@ color:white;
 
 .button:hover{
 
-transform:translateY(-3px);
+transform:translateY(-4px);
 
 }
 
@@ -202,7 +206,7 @@ transform:translateY(-3px);
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,minmax(250px,1fr));
+repeat(auto-fit,minmax(240px,1fr));
 
 gap:25px;
 
@@ -212,16 +216,17 @@ margin-bottom:35px;
 
 .card{
 
-background:rgba(255,255,255,0.05);
+background:
+rgba(255,255,255,0.05);
+
+padding:30px;
+
+border-radius:28px;
 
 border:
 1px solid rgba(255,255,255,0.06);
 
-backdrop-filter:blur(18px);
-
-padding:28px;
-
-border-radius:28px;
+backdrop-filter:blur(20px);
 
 transition:0.3s;
 
@@ -235,23 +240,21 @@ transform:translateY(-6px);
 
 .card h3{
 
-font-size:15px;
-
 color:#94a3b8;
 
-margin-bottom:14px;
+margin-bottom:15px;
 
 }
 
 .card h2{
 
-font-size:38px;
+font-size:42px;
 
 font-weight:900;
 
 }
 
-.content-grid{
+.grid{
 
 display:grid;
 
@@ -259,43 +262,42 @@ grid-template-columns:2fr 1fr;
 
 gap:28px;
 
+margin-bottom:35px;
+
 }
 
-.chart-box,
-.products-box{
+.box{
 
-background:rgba(255,255,255,0.05);
+background:
+rgba(255,255,255,0.05);
+
+padding:28px;
+
+border-radius:30px;
 
 border:
 1px solid rgba(255,255,255,0.06);
 
-backdrop-filter:blur(18px);
-
-border-radius:30px;
-
-padding:28px;
+backdrop-filter:blur(20px);
 
 }
 
-.chart-box h2,
-.products-box h2{
+.box h2{
 
 margin-bottom:25px;
-
-font-size:24px;
 
 }
 
 .product{
 
 display:flex;
-align-items:center;
 justify-content:space-between;
+align-items:center;
 
 padding:18px 0;
 
 border-bottom:
-1px solid rgba(255,255,255,0.05);
+1px solid rgba(255,255,255,0.06);
 
 }
 
@@ -305,20 +307,20 @@ border:none;
 
 }
 
-.product-info{
+.product-left{
 
 display:flex;
-align-items:center;
 gap:15px;
+align-items:center;
 
 }
 
 .product img{
 
-width:58px;
-height:58px;
+width:60px;
+height:60px;
 
-border-radius:16px;
+border-radius:18px;
 
 object-fit:cover;
 
@@ -326,26 +328,74 @@ object-fit:cover;
 
 .price{
 
-font-weight:800;
+font-weight:900;
 
 color:#00ffbf;
 
 }
 
-.badge{
+.messages{
 
-padding:10px 14px;
+max-height:400px;
+
+overflow-y:auto;
+
+}
+
+.message{
 
 background:
-rgba(0,255,191,0.12);
+rgba(255,255,255,0.05);
 
-border-radius:12px;
+padding:18px;
 
-font-size:13px;
+border-radius:18px;
 
-font-weight:700;
+margin-bottom:18px;
 
-color:#00ffbf;
+}
+
+.form{
+
+margin-top:30px;
+
+display:grid;
+
+gap:15px;
+
+}
+
+.input{
+
+padding:18px;
+
+border:none;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.08);
+
+color:white;
+
+outline:none;
+
+}
+
+.select{
+
+padding:18px;
+
+border:none;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.08);
+
+color:white;
+
+outline:none;
 
 }
 
@@ -363,7 +413,7 @@ width:100%;
 
 }
 
-.content-grid{
+.grid{
 
 grid-template-columns:1fr;
 
@@ -385,17 +435,29 @@ grid-template-columns:1fr;
 
 <div class="menu">
 
-<a href="#">🏠 Dashboard</a>
+<a href="#">
+🏠 Dashboard
+</a>
 
-<a href="#">📦 Produtos</a>
+<a href="#">
+📦 Produtos
+</a>
 
-<a href="#">💬 Conversas</a>
+<a href="#">
+💬 Conversas
+</a>
 
-<a href="#">📈 Analytics</a>
+<a href="#">
+📈 Analytics
+</a>
 
-<a href="#">🤖 Inteligência IA</a>
+<a href="#">
+🤖 IA Inteligente
+</a>
 
-<a href="#">⚙️ Configurações</a>
+<a href="#">
+⚙️ Configurações
+</a>
 
 </div>
 
@@ -405,14 +467,14 @@ grid-template-columns:1fr;
 
 <div class="topbar">
 
-<div class="title">
+<div>
 
 <h1>
 📊 Dashboard Premium
 </h1>
 
 <p>
-Painel global inteligente de vendas automáticas
+Painel global inteligente em tempo real
 </p>
 
 </div>
@@ -424,7 +486,7 @@ Painel global inteligente de vendas automáticas
 </button>
 
 <button class="button primary">
-🚀 Upgrade IA
+🚀 AutoVenda IA
 </button>
 
 </div>
@@ -436,7 +498,7 @@ Painel global inteligente de vendas automáticas
 <div class="card">
 
 <h3>
-💰 Receita Total
+💰 Receita
 </h3>
 
 <h2 id="revenue">
@@ -483,25 +545,102 @@ Painel global inteligente de vendas automáticas
 
 </div>
 
-<div class="content-grid">
+<div class="grid">
 
-<div class="chart-box">
+<div class="box">
 
 <h2>
-📈 Crescimento de vendas
+📈 Analytics
 </h2>
 
-<canvas id="salesChart"></canvas>
+<canvas id="chart"></canvas>
 
 </div>
 
-<div class="products-box">
+<div class="box">
 
 <h2>
-🔥 Produtos recentes
+🔥 Produtos Recentes
 </h2>
 
 <div id="recentProducts">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="box">
+
+<h2>
+📦 Adicionar Produto
+</h2>
+
+<div class="form">
+
+<input
+type="text"
+placeholder="Nome produto"
+id="name"
+class="input"
+>
+
+<input
+type="text"
+placeholder="Preço"
+id="price"
+class="input"
+>
+
+<input
+type="text"
+placeholder="Descrição"
+id="description"
+class="input"
+>
+
+<select id="type" class="select">
+
+<option value="fisico">
+Produto Físico
+</option>
+
+<option value="digital">
+Produto Digital
+</option>
+
+</select>
+
+<input
+type="file"
+id="image"
+class="input"
+>
+
+<button
+class="button primary"
+onclick="createProduct()"
+>
+🚀 Salvar Produto
+</button>
+
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>
+💬 Conversas Tempo Real
+</h2>
+
+<div
+class="messages"
+id="messagesBox"
+>
 
 </div>
 
@@ -519,26 +658,63 @@ localStorage.getItem("token");
 if(!token){
 
 window.location.href =
-"/login.html";
+"/login";
 
 }
 
-async function loadAnalytics(){
+const socket = io();
 
-try{
+socket.on(
+"new-message",
+(data)=>{
+
+document.getElementById(
+"messagesBox"
+).innerHTML += `
+
+<div class="message">
+
+<strong>
+Cliente:
+</strong>
+
+${data.message}
+
+<br><br>
+
+<strong>
+IA:
+</strong>
+
+${data.response}
+
+</div>
+
+`;
+
+}
+);
+
+socket.on(
+"new-product",
+(product)=>{
+
+loadAnalytics();
+
+}
+);
+
+async function loadAnalytics(){
 
 const response =
 await fetch(
-
 "/admin/analytics",
-
 {
 headers:{
 Authorization:
 `Bearer ${token}`
 }
 }
-
 );
 
 const data =
@@ -564,35 +740,41 @@ document.getElementById(
 ).innerText =
 data.messages;
 
-const productsContainer =
+const products =
 document.getElementById(
 "recentProducts"
 );
 
-productsContainer.innerHTML = "";
+products.innerHTML = "";
 
 data.recentProducts.forEach(product=>{
 
-productsContainer.innerHTML += `
+products.innerHTML += `
 
 <div class="product">
 
-<div class="product-info">
+<div class="product-left">
 
 <img src="${product.image}">
 
 <div>
 
-<h4>${product.name}</h4>
+<h4>
+${product.name}
+</h4>
 
-<p>${product.description}</p>
+<p>
+${product.description}
+</p>
 
 </div>
 
 </div>
 
 <div class="price">
+
 ${product.price}
+
 </div>
 
 </div>
@@ -603,7 +785,7 @@ ${product.price}
 
 const ctx =
 document.getElementById(
-"salesChart"
+"chart"
 );
 
 new Chart(ctx,{
@@ -628,12 +810,12 @@ label:"Vendas",
 
 data:[
 120,
-190,
 300,
-500,
-700,
-950,
-1200
+450,
+600,
+900,
+1200,
+1600
 ],
 
 borderWidth:4,
@@ -642,49 +824,93 @@ tension:0.4
 
 }]
 
-},
-
-options:{
-
-responsive:true,
-
-plugins:{
-
-legend:{
-
-labels:{
-color:"white"
-}
-
-}
-
-},
-
-scales:{
-
-x:{
-ticks:{
-color:"white"
-}
-},
-
-y:{
-ticks:{
-color:"white"
-}
-}
-
-}
-
 }
 
 });
 
-}catch(error){
+}
 
-console.log(error);
+async function createProduct(){
+
+const name =
+document.getElementById(
+"name"
+).value;
+
+const price =
+document.getElementById(
+"price"
+).value;
+
+const description =
+document.getElementById(
+"description"
+).value;
+
+const type =
+document.getElementById(
+"type"
+).value;
+
+const imageFile =
+document.getElementById(
+"image"
+).files[0];
+
+const formData =
+new FormData();
+
+formData.append(
+"image",
+imageFile
+);
+
+const uploadResponse =
+await fetch(
+"/upload-image",
+{
+method:"POST",
+body:formData
+}
+);
+
+const uploadData =
+await uploadResponse.json();
+
+await fetch(
+"/admin/products",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json",
+
+Authorization:
+`Bearer ${token}`
+},
+
+body:JSON.stringify({
+
+name,
+price,
+description,
+type,
+
+image:
+uploadData.url
+
+})
 
 }
+);
+
+loadAnalytics();
+
+alert(
+"Produto criado 🚀"
+);
 
 }
 
