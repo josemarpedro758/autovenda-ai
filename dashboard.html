@@ -3,7 +3,8 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>AutoVenda IA Dashboard</title>
 
@@ -16,58 +17,103 @@ background:#0f172a;
 color:white;
 }
 
-header{
+.sidebar{
+
+width:250px;
+height:100vh;
 background:#111827;
+position:fixed;
+left:0;
+top:0;
 padding:20px;
-font-size:28px;
-font-weight:bold;
-text-align:center;
+
 }
 
-.container{
+.sidebar h1{
+
+font-size:24px;
+margin-bottom:40px;
+
+}
+
+.sidebar button{
+
+width:100%;
+padding:15px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:white;
+cursor:pointer;
+
+}
+
+.main{
+
+margin-left:270px;
 padding:20px;
+
+}
+
+.cards{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:20px;
+margin-bottom:30px;
+
 }
 
 .card{
+
 background:#1e293b;
 padding:20px;
-border-radius:14px;
-margin-bottom:20px;
+border-radius:15px;
+
 }
 
 .card h2{
-margin-top:0;
+
+margin:0;
+font-size:18px;
+
 }
 
-.product{
-background:#334155;
-padding:15px;
-border-radius:12px;
-margin-top:15px;
+.card p{
+
+font-size:32px;
+margin-top:10px;
+font-weight:bold;
+
 }
 
+.section{
+
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+
+}
+
+.product,
 .client{
+
 background:#334155;
 padding:15px;
 border-radius:12px;
 margin-top:15px;
+
 }
 
 img{
-width:120px;
-border-radius:12px;
-margin-top:10px;
-}
 
-.logout{
-
-background:red;
-border:none;
-padding:12px 20px;
+width:100px;
 border-radius:10px;
-color:white;
-cursor:pointer;
-margin-top:20px;
+margin-top:10px;
 
 }
 
@@ -77,13 +123,39 @@ margin-top:20px;
 
 <body>
 
-<header>
-AutoVenda IA Dashboard 🚀
-</header>
+<div class="sidebar">
 
-<div class="container">
+<h1>AutoVenda IA 🚀</h1>
+
+<button onclick="logout()">
+Sair
+</button>
+
+</div>
+
+<div class="main">
+
+<div class="cards">
 
 <div class="card">
+
+<h2>Total Produtos</h2>
+
+<p id="totalProducts">0</p>
+
+</div>
+
+<div class="card">
+
+<h2>Total Clientes</h2>
+
+<p id="totalClients">0</p>
+
+</div>
+
+</div>
+
+<div class="section">
 
 <h2>Produtos</h2>
 
@@ -91,20 +163,13 @@ AutoVenda IA Dashboard 🚀
 
 </div>
 
-<div class="card">
+<div class="section">
 
 <h2>Clientes</h2>
 
 <div id="clients"></div>
 
 </div>
-
-<button
-class="logout"
-onclick="logout()"
->
-Sair
-</button>
 
 </div>
 
@@ -141,12 +206,19 @@ Authorization:
 const products =
 await response.json();
 
+document.getElementById(
+"totalProducts"
+).innerText =
+products.length;
+
 const productsDiv =
-document.getElementById("products");
+document.getElementById(
+"products"
+);
 
 productsDiv.innerHTML = "";
 
-products.forEach(product => {
+products.forEach(product=>{
 
 productsDiv.innerHTML += `
 
@@ -186,12 +258,19 @@ Authorization:
 const clients =
 await response.json();
 
+document.getElementById(
+"totalClients"
+).innerText =
+clients.length;
+
 const clientsDiv =
-document.getElementById("clients");
+document.getElementById(
+"clients"
+);
 
 clientsDiv.innerHTML = "";
 
-clients.forEach(client => {
+clients.forEach(client=>{
 
 clientsDiv.innerHTML += `
 
@@ -217,7 +296,9 @@ ${client.lastMessage}
 
 function logout(){
 
-localStorage.removeItem("token");
+localStorage.removeItem(
+"token"
+);
 
 window.location.href =
 "/login.html";
