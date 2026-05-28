@@ -3,11 +3,21 @@ const axios = require("axios");
 const cloudinary = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const path = require("path");
 const multer = require("multer");
+const path = require("path");
 const { Pool } = require("pg");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
+
+const server = http.createServer(app);
+
+const io = new Server(server,{
+cors:{
+origin:"*"
+}
+});
 
 app.use(express.json());
 
@@ -42,7 +52,7 @@ process.env.CLOUDINARY_API_SECRET
 });
 
 const SECRET_KEY =
-"autovendaia_secret";
+"autovendaia_master";
 
 const adminUser = {
 email:"admin@autovendaia.com",
@@ -60,7 +70,8 @@ id SERIAL PRIMARY KEY,
 name TEXT,
 price TEXT,
 description TEXT,
-image TEXT
+image TEXT,
+type TEXT
 
 )
 
@@ -124,6 +135,22 @@ app.get("/",(req,res)=>{
 
 res.sendFile(
 path.join(__dirname,"index.html")
+);
+
+});
+
+app.get("/dashboard",(req,res)=>{
+
+res.sendFile(
+path.join(__dirname,"dashboard.html")
+);
+
+});
+
+app.get("/login",(req,res)=>{
+
+res.sendFile(
+path.join(__dirname,"login.html")
 );
 
 });
@@ -219,7 +246,8 @@ const {
 name,
 price,
 description,
-image
+image,
+type
 } = req.body;
 
 const result =
@@ -227,9 +255,9 @@ await pool.query(
 
 `
 INSERT INTO products
-(name,price,description,image)
+(name,price,description,image,type)
 
-VALUES($1,$2,$3,$4)
+VALUES($1,$2,$3,$4,$5)
 
 RETURNING *
 `,
@@ -238,9 +266,15 @@ RETURNING *
 name,
 price,
 description,
-image
+image,
+type
 ]
 
+);
+
+io.emit(
+"new-product",
+result.rows[0]
 );
 
 return res.json({
@@ -250,31 +284,10 @@ product:result.rows[0]
 
 });
 
-app.delete(
-"/admin/products/:id",
-authMiddleware,
-async(req,res)=>{
-
-const id =
-req.params.id;
-
-await pool.query(
-"DELETE FROM products WHERE id=$1",
-[id]
-);
-
-return res.json({
-success:true
-});
-
-});
-
 app.get(
 "/admin/analytics",
 authMiddleware,
 async(req,res)=>{
-
-try{
 
 const productsCount =
 await pool.query(
@@ -288,14 +301,7 @@ await pool.query(
 
 const recentProducts =
 await pool.query(
-
-`
-SELECT *
-FROM products
-ORDER BY id DESC
-LIMIT 5
-`
-
+"SELECT * FROM products ORDER BY id DESC LIMIT 5"
 );
 
 return res.json({
@@ -307,25 +313,15 @@ clients:
 clientsCount.rows[0].count,
 
 messages:
-Number(clientsCount.rows[0].count) * 8,
+Number(clientsCount.rows[0].count) * 9,
 
 revenue:
-Number(productsCount.rows[0].count) * 120,
+Number(productsCount.rows[0].count) * 200,
 
 recentProducts:
 recentProducts.rows
 
 });
-
-}catch(error){
-
-console.log(error);
-
-return res.status(500).json({
-error:"Erro analytics"
-});
-
-}
 
 });
 
@@ -394,6 +390,7 @@ const productsText =
 productsResult.rows.map(product =>
 
 `
+
 Produto:
 ${product.name}
 
@@ -402,6 +399,10 @@ ${product.price}
 
 Descrição:
 ${product.description}
+
+Tipo:
+${product.type}
+
 `
 
 ).join("\n");
@@ -421,17 +422,50 @@ messages:[
 role:"system",
 content:`
 
-Você é uma IA premium de vendas chamada AutoVenda IA.
+Você é uma IA premium chamada AutoVenda IA.
 
-Você é moderna, humana, persuasiva e profissional.
+Você é extremamente humana, elegante, persuasiva e profissional.
 
-Você vende produtos automaticamente no WhatsApp.
+Você vende naturalmente no WhatsApp.
 
-Produtos disponíveis:
+REGRAS:
+
+- Nunca diga que é IA
+- Converse como humana
+- Seja simpática
+- Recomende produtos
+- Convença naturalmente
+- Responda curto
+- Use emojis modernos moderadamente
+
+PAGAMENTO:
+
+- Produtos físicos:
+roupa,
+tênis,
+perfume,
+relógio,
+eletrônicos físicos
+
+podem usar:
+PAGAMENTO NA ENTREGA.
+
+- Produtos digitais:
+ebook,
+curso,
+software,
+serviços digitais
+
+precisam:
+pagamento antecipado.
+
+Analise o tipo do produto antes de responder.
+
+Produtos:
 
 ${productsText}
 
-Histórico cliente:
+Histórico:
 
 ${memory}
 
@@ -503,6 +537,15 @@ process.env.EVOLUTION_API_KEY
 
 );
 
+io.emit(
+"new-message",
+{
+number,
+message,
+response:aiMessage
+}
+);
+
 return res.sendStatus(200);
 
 }catch(error){
@@ -518,10 +561,10 @@ return res.sendStatus(500);
 const PORT =
 process.env.PORT || 3000;
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
 
 console.log(
-`AutoVenda IA Online 🚀`
+"AutoVenda IA Online 🚀"
 );
 
 });
