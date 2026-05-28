@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8"/>
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0"/>
+<title>AutoVenda IA • Dashboard</title>
 
-<title>AutoVenda IA</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 
@@ -20,107 +16,113 @@ rel="stylesheet">
 margin:0;
 padding:0;
 box-sizing:border-box;
+font-family:'Inter',sans-serif;
 }
 
 body{
 
-font-family:'Inter',sans-serif;
-background:#050816;
+background:
+linear-gradient(
+135deg,
+#050816,
+#0b1023,
+#121d3a
+);
+
+min-height:100vh;
 color:white;
 display:flex;
-min-height:100vh;
+
+overflow-x:hidden;
 
 }
 
 .sidebar{
 
-width:260px;
-height:100vh;
-
-background:
-rgba(255,255,255,0.04);
+width:280px;
+background:rgba(255,255,255,0.05);
 
 backdrop-filter:blur(20px);
 
 border-right:
-1px solid rgba(255,255,255,0.05);
+1px solid rgba(255,255,255,0.08);
 
-padding:25px;
+padding:30px 20px;
 
-position:fixed;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
 
 }
 
 .logo{
 
 font-size:28px;
-font-weight:700;
+font-weight:800;
 
-margin-bottom:50px;
-
-background:
-linear-gradient(
+background:linear-gradient(
 90deg,
+#6ee7ff,
 #7c3aed,
-#06b6d4
+#00ffbf
 );
 
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 
+margin-bottom:40px;
+
 }
 
-.sidebar button{
+.menu{
 
-width:100%;
-padding:16px;
+display:flex;
+flex-direction:column;
+gap:18px;
 
-margin-bottom:12px;
+}
+
+.menu button{
+
+background:rgba(255,255,255,0.04);
 
 border:none;
-border-radius:16px;
 
-background:
-rgba(255,255,255,0.05);
+padding:16px;
+
+border-radius:18px;
 
 color:white;
 
 font-size:15px;
-font-weight:500;
+font-weight:600;
 
 cursor:pointer;
 
 transition:0.3s;
 
-}
-
-.sidebar button:hover{
-
-background:
-rgba(255,255,255,0.1);
-
-transform:translateY(-2px);
+display:flex;
+align-items:center;
+gap:12px;
 
 }
 
-.logout{
+.menu button:hover{
 
-margin-top:30px;
+transform:translateY(-3px);
 
-background:
-linear-gradient(
-135deg,
-#ef4444,
-#dc2626
-)!important;
+background:linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4
+);
 
 }
 
 .main{
 
-margin-left:260px;
-width:100%;
-padding:30px;
+flex:1;
+padding:35px;
 
 }
 
@@ -130,250 +132,299 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 
-margin-bottom:30px;
+margin-bottom:35px;
 
 }
 
-.topbar h1{
+.title h1{
 
-font-size:34px;
-font-weight:700;
+font-size:36px;
+font-weight:800;
 
 }
 
-.topbar p{
+.title p{
 
-margin-top:8px;
 color:#94a3b8;
+margin-top:8px;
 
 }
 
 .profile{
 
-width:50px;
-height:50px;
-
-border-radius:50%;
-
-background:
-linear-gradient(
-135deg,
-#7c3aed,
-#06b6d4
-);
-
 display:flex;
 align-items:center;
-justify-content:center;
+gap:12px;
 
-font-weight:700;
+background:rgba(255,255,255,0.05);
+
+padding:12px 18px;
+
+border-radius:18px;
 
 }
 
-.stats{
+.profile img{
+
+width:42px;
+height:42px;
+border-radius:50%;
+
+object-fit:cover;
+
+}
+
+.cards{
 
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,minmax(240px,1fr));
+repeat(auto-fit,minmax(250px,1fr));
 
-gap:20px;
+gap:22px;
 
-margin-bottom:30px;
+margin-bottom:35px;
 
 }
 
 .card{
 
-background:
-rgba(255,255,255,0.04);
+background:rgba(255,255,255,0.05);
+
+backdrop-filter:blur(18px);
 
 padding:25px;
 
-border-radius:24px;
+border-radius:28px;
 
 border:
-1px solid rgba(255,255,255,0.05);
+1px solid rgba(255,255,255,0.06);
 
-backdrop-filter:blur(20px);
+position:relative;
+
+overflow:hidden;
+
+transition:0.3s;
 
 }
 
-.card span{
+.card:hover{
 
-font-size:14px;
-color:#94a3b8;
+transform:translateY(-5px);
+
+}
+
+.card::before{
+
+content:"";
+
+position:absolute;
+
+width:160px;
+height:160px;
+
+background:rgba(255,255,255,0.05);
+
+border-radius:50%;
+
+top:-60px;
+right:-60px;
+
+}
+
+.card h3{
+
+font-size:16px;
+color:#cbd5e1;
+
+margin-bottom:18px;
 
 }
 
 .card h2{
 
 font-size:42px;
-margin-top:10px;
+font-weight:800;
 
 }
 
-.section{
+.card span{
 
-background:
-rgba(255,255,255,0.04);
+display:block;
+margin-top:14px;
 
-padding:25px;
+font-size:14px;
+color:#00ffbf;
 
-border-radius:24px;
+}
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+2fr 1fr;
+
+gap:24px;
+
+}
+
+.chart-box,
+.activity-box{
+
+background:rgba(255,255,255,0.05);
+
+backdrop-filter:blur(18px);
+
+border-radius:30px;
+
+padding:28px;
 
 border:
-1px solid rgba(255,255,255,0.05);
-
-margin-bottom:25px;
-
-backdrop-filter:blur(20px);
+1px solid rgba(255,255,255,0.06);
 
 }
 
-.section h2{
+.chart-box h2,
+.activity-box h2{
 
-margin-bottom:20px;
+margin-bottom:24px;
+
+font-size:22px;
 
 }
 
-input,
-textarea{
+.activity{
 
-width:100%;
+display:flex;
+flex-direction:column;
+gap:16px;
 
-padding:18px;
+}
 
-margin-bottom:15px;
+.activity-item{
 
-border:none;
-outline:none;
+background:rgba(255,255,255,0.04);
+
+padding:16px;
 
 border-radius:18px;
 
-background:
-rgba(255,255,255,0.05);
+display:flex;
+justify-content:space-between;
+align-items:center;
 
-color:white;
+}
 
-font-size:15px;
+.activity-item strong{
+
+font-size:14px;
+
+}
+
+.activity-item span{
+
+font-size:13px;
+color:#94a3b8;
+
+}
+
+.products{
+
+margin-top:28px;
+
+background:rgba(255,255,255,0.05);
+
+backdrop-filter:blur(18px);
+
+border-radius:30px;
+
+padding:28px;
 
 border:
+1px solid rgba(255,255,255,0.06);
+
+}
+
+.products h2{
+
+margin-bottom:22px;
+
+}
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+th,td{
+
+padding:18px;
+text-align:left;
+
+}
+
+th{
+
+color:#94a3b8;
+
+font-size:14px;
+
+}
+
+tr{
+
+border-bottom:
 1px solid rgba(255,255,255,0.05);
 
 }
 
-textarea{
+.product-img{
 
-min-height:120px;
-resize:none;
+width:60px;
+height:60px;
 
-}
+border-radius:16px;
 
-input[type="file"]{
-
-padding:14px;
+object-fit:cover;
 
 }
 
-.add-btn{
-
-width:100%;
-padding:18px;
-
-border:none;
-border-radius:18px;
+.badge{
 
 background:
 linear-gradient(
-135deg,
+90deg,
 #7c3aed,
 #06b6d4
 );
 
-color:white;
+padding:8px 14px;
 
-font-size:16px;
-font-weight:600;
+border-radius:999px;
 
-cursor:pointer;
+font-size:12px;
+font-weight:700;
 
-transition:0.3s;
-
-}
-
-.add-btn:hover{
-
-transform:translateY(-2px);
-
-opacity:0.95;
+display:inline-block;
 
 }
 
-.product{
+@media(max-width:1100px){
 
-background:
-rgba(255,255,255,0.03);
+.grid{
 
-padding:20px;
-
-border-radius:20px;
-
-margin-top:20px;
-
-border:
-1px solid rgba(255,255,255,0.04);
+grid-template-columns:1fr;
 
 }
 
-.product img{
+.sidebar{
 
-width:120px;
-border-radius:16px;
-
-margin-top:15px;
+display:none;
 
 }
-
-.product h3{
-
-font-size:22px;
-margin-bottom:10px;
-
-}
-
-.product p{
-
-margin-top:8px;
-color:#cbd5e1;
-
-}
-
-.delete-btn{
-
-margin-top:15px;
-
-padding:12px 18px;
-
-border:none;
-border-radius:12px;
-
-background:
-linear-gradient(
-135deg,
-#ef4444,
-#dc2626
-);
-
-color:white;
-
-cursor:pointer;
-
-font-weight:600;
-
-}
-
-@media(max-width:900px){
 
 body{
 
@@ -381,46 +432,46 @@ flex-direction:column;
 
 }
 
-.sidebar{
-
-width:100%;
-height:auto;
-position:relative;
-
-}
-
-.main{
-
-margin-left:0;
-
-}
-
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="sidebar">
 
+<div>
+
 <div class="logo">
-AutoVenda IA
+🚀 AutoVenda IA
 </div>
 
-<button>
-📊 Dashboard
-</button>
+<div class="menu">
 
-<button>
-🛍 Produtos
-</button>
+<button>📊 Dashboard</button>
 
-<button class="logout"
-onclick="logout()">
+<button>🛍 Produtos</button>
+
+<button>🤖 Inteligência IA</button>
+
+<button>💬 Conversas</button>
+
+<button>📈 Analytics</button>
+
+<button>⚙ Configurações</button>
+
+</div>
+
+</div>
+
+<div class="menu">
+
+<button onclick="logout()">
 🚪 Sair
 </button>
+
+</div>
 
 </div>
 
@@ -428,93 +479,176 @@ onclick="logout()">
 
 <div class="topbar">
 
-<div>
+<div class="title">
 
 <h1>
-Dashboard
+🌍 A nova geração de compras online no mundo
 </h1>
 
 <p>
-Gerencie seus produtos com IA premium.
+Painel inteligente empresarial • AutoVenda IA 2026
 </p>
 
 </div>
 
 <div class="profile">
-AI
+
+<img src="https://i.imgur.com/8Km9tLL.jpg">
+
+<div>
+
+<strong>
+Admin
+</strong>
+
+<p style="font-size:13px;color:#94a3b8;">
+Online agora
+</p>
+
+</div>
+
 </div>
 
 </div>
 
-<div class="stats">
+<div class="cards">
 
 <div class="card">
 
-<span>Total Produtos</span>
+<h3>🛍 Total Produtos</h3>
 
-<h2 id="totalProducts">
+<h2 id="productsCount">
 0
 </h2>
 
-</div>
+<span>
++12% este mês
+</span>
 
 </div>
 
-<div class="section">
+<div class="card">
 
-<h2>
-Adicionar Produto
+<h3>👥 Total Clientes</h3>
+
+<h2 id="clientsCount">
+0
 </h2>
 
-<input
-type="text"
-id="name"
-placeholder="Nome do produto"
-/>
-
-<input
-type="text"
-id="price"
-placeholder="Preço"
-/>
-
-<textarea
-id="description"
-placeholder="Descrição do produto"
-></textarea>
-
-<input
-type="file"
-id="image"
-/>
-
-<button
-class="add-btn"
-onclick="addProduct()"
->
-
-Adicionar Produto
-
-</button>
+<span>
++28% esta semana
+</span>
 
 </div>
 
-<div class="section">
+<div class="card">
 
-<h2>
-Produtos
+<h3>💬 Conversas IA</h3>
+
+<h2 id="messagesCount">
+0
 </h2>
 
-<div id="products"></div>
+<span>
+IA super ativa
+</span>
+
+</div>
+
+<div class="card">
+
+<h3>💰 Receita Estimada</h3>
+
+<h2 id="revenue">
+$0
+</h2>
+
+<span>
+Crescimento global 🚀
+</span>
+
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="chart-box">
+
+<h2>
+📈 Performance Global
+</h2>
+
+<canvas id="salesChart"></canvas>
+
+</div>
+
+<div class="activity-box">
+
+<h2>
+⚡ Atividade IA
+</h2>
+
+<div class="activity">
+
+<div class="activity-item">
+<strong>🤖 IA respondeu cliente</strong>
+<span>agora mesmo</span>
+</div>
+
+<div class="activity-item">
+<strong>🛍 Produto vendido</strong>
+<span>2 min atrás</span>
+</div>
+
+<div class="activity-item">
+<strong>💬 Nova conversa</strong>
+<span>5 min atrás</span>
+</div>
+
+<div class="activity-item">
+<strong>📈 Analytics atualizado</strong>
+<span>online</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="products">
+
+<h2>
+🛒 Produtos Recentes
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Imagem</th>
+<th>Produto</th>
+<th>Preço</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="productsTable">
+
+</tbody>
+
+</table>
 
 </div>
 
 </div>
 
 <script>
-
-const API_URL =
-"https://autovenda-ai.onrender.com";
 
 const token =
 localStorage.getItem("token");
@@ -526,198 +660,181 @@ window.location.href =
 
 }
 
-async function loadProducts(){
+async function loadDashboard(){
 
-const response = await fetch(
+try{
 
-API_URL + "/admin/products",
+const response =
+await fetch(
+
+"/admin/analytics",
 
 {
+
 headers:{
+
 Authorization:
-"Bearer " + token
+`Bearer ${token}`
+
 }
+
 }
 
 );
 
-const products =
+const data =
 await response.json();
 
 document.getElementById(
-"totalProducts"
+"productsCount"
 ).innerText =
-products.length;
+data.products;
 
-const productsDiv =
 document.getElementById(
-"products"
+"clientsCount"
+).innerText =
+data.clients;
+
+document.getElementById(
+"messagesCount"
+).innerText =
+Number(data.clients) * 8;
+
+document.getElementById(
+"revenue"
+).innerText =
+"$" + (
+Number(data.products) * 120
 );
 
-productsDiv.innerHTML = "";
+const table =
+document.getElementById(
+"productsTable"
+);
 
-products.forEach(product=>{
+table.innerHTML = "";
 
-productsDiv.innerHTML += `
+data.recentProducts.forEach(product=>{
 
-<div class="product">
+table.innerHTML += `
 
-<h3>
-${product.name}
-</h3>
+<tr>
 
-<p>
-${product.price}
-</p>
+<td>
+<img
+src="${product.image}"
+class="product-img">
+</td>
 
-<p>
-${product.description}
-</p>
+<td>${product.name}</td>
 
-<img src="${product.image}" />
+<td>${product.price}</td>
 
-<br>
+<td>
+<span class="badge">
+Ativo
+</span>
+</td>
 
-<button
-class="delete-btn"
-onclick="deleteProduct(${product.id})"
->
-
-Apagar
-
-</button>
-
-</div>
+</tr>
 
 `;
 
 });
 
+}catch(error){
+
+console.log(error);
+
 }
 
-async function addProduct(){
-
-const name =
-document.getElementById(
-"name"
-).value;
-
-const price =
-document.getElementById(
-"price"
-).value;
-
-const description =
-document.getElementById(
-"description"
-).value;
-
-const imageFile =
-document.getElementById(
-"image"
-).files[0];
-
-const formData =
-new FormData();
-
-formData.append(
-"image",
-imageFile
-);
-
-const uploadResponse =
-await fetch(
-
-API_URL + "/upload-image",
-
-{
-method:"POST",
-body:formData
 }
 
+loadDashboard();
+
+const ctx =
+document.getElementById(
+"salesChart"
 );
 
-const uploadData =
-await uploadResponse.json();
+new Chart(ctx,{
 
-const image =
-uploadData.url;
+type:"line",
 
-await fetch(
+data:{
 
-API_URL + "/admin/products",
+labels:[
+"Jan",
+"Fev",
+"Mar",
+"Abr",
+"Mai",
+"Jun",
+"Jul"
+],
 
-{
+datasets:[{
 
-method:"POST",
+label:"Vendas IA",
 
-headers:{
+data:[
+12,
+19,
+15,
+25,
+32,
+44,
+58
+],
 
-"Content-Type":
-"application/json",
+borderWidth:4,
 
-Authorization:
-"Bearer " + token
+tension:0.4,
+
+fill:true,
+
+backgroundColor:
+"rgba(124,58,237,0.18)",
+
+borderColor:"#7c3aed"
+
+}]
 
 },
 
-body:JSON.stringify({
+options:{
 
-name,
-price,
-description,
-image
+responsive:true,
 
-})
+plugins:{
 
+legend:{
+labels:{
+color:"white"
+}
 }
 
-);
+},
 
-document.getElementById(
-"name"
-).value = "";
+scales:{
 
-document.getElementById(
-"price"
-).value = "";
-
-document.getElementById(
-"description"
-).value = "";
-
-document.getElementById(
-"image"
-).value = "";
-
-loadProducts();
-
+x:{
+ticks:{
+color:"#94a3b8"
 }
+},
 
-async function deleteProduct(id){
-
-await fetch(
-
-API_URL +
-"/admin/products/" +
-id,
-
-{
-
-method:"DELETE",
-
-headers:{
-Authorization:
-"Bearer " + token
+y:{
+ticks:{
+color:"#94a3b8"
+}
 }
 
 }
 
-);
-
-loadProducts();
-
 }
+
+});
 
 function logout(){
 
@@ -729,8 +846,6 @@ window.location.href =
 "/login.html";
 
 }
-
-loadProducts();
 
 </script>
 
