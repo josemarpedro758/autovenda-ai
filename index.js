@@ -542,9 +542,3 @@ console.log(
 );
 
 });
-
-console.log(
-`AutoVenda IA Online na porta ${PORT}`
-);
-
-});
