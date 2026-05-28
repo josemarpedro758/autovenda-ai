@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AutoVenda IA • Dashboard</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Dashboard • AutoVenda IA</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -25,52 +26,55 @@ background:
 linear-gradient(
 135deg,
 #050816,
-#0b1023,
-#121d3a
+#0f172a,
+#111827
 );
 
-min-height:100vh;
 color:white;
-display:flex;
 
 overflow-x:hidden;
+
+display:flex;
+
+min-height:100vh;
 
 }
 
 .sidebar{
 
-width:280px;
-background:rgba(255,255,255,0.05);
+width:270px;
+
+background:rgba(255,255,255,0.04);
 
 backdrop-filter:blur(20px);
 
 border-right:
-1px solid rgba(255,255,255,0.08);
+1px solid rgba(255,255,255,0.05);
 
-padding:30px 20px;
+padding:30px;
 
 display:flex;
 flex-direction:column;
-justify-content:space-between;
 
 }
 
 .logo{
 
 font-size:28px;
-font-weight:800;
+font-weight:900;
 
-background:linear-gradient(
+margin-bottom:50px;
+
+background:
+linear-gradient(
 90deg,
-#6ee7ff,
 #7c3aed,
+#06b6d4,
 #00ffbf
 );
 
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-
-margin-bottom:40px;
 
 }
 
@@ -78,51 +82,40 @@ margin-bottom:40px;
 
 display:flex;
 flex-direction:column;
-gap:18px;
+gap:16px;
 
 }
 
-.menu button{
+.menu a{
 
-background:rgba(255,255,255,0.04);
+text-decoration:none;
+color:#cbd5e1;
 
-border:none;
-
-padding:16px;
+padding:16px 18px;
 
 border-radius:18px;
 
-color:white;
-
-font-size:15px;
-font-weight:600;
-
-cursor:pointer;
-
 transition:0.3s;
 
-display:flex;
-align-items:center;
-gap:12px;
+font-weight:600;
 
 }
 
-.menu button:hover{
+.menu a:hover{
 
-transform:translateY(-3px);
+background:rgba(255,255,255,0.08);
 
-background:linear-gradient(
-90deg,
-#7c3aed,
-#06b6d4
-);
+color:white;
+
+transform:translateX(4px);
 
 }
 
 .main{
 
 flex:1;
-padding:35px;
+
+padding:40px;
 
 }
 
@@ -138,39 +131,69 @@ margin-bottom:35px;
 
 .title h1{
 
-font-size:36px;
-font-weight:800;
+font-size:42px;
+font-weight:900;
+
+margin-bottom:10px;
 
 }
 
 .title p{
 
 color:#94a3b8;
-margin-top:8px;
 
 }
 
-.profile{
+.top-actions{
 
 display:flex;
-align-items:center;
-gap:12px;
-
-background:rgba(255,255,255,0.05);
-
-padding:12px 18px;
-
-border-radius:18px;
+gap:15px;
 
 }
 
-.profile img{
+.button{
 
-width:42px;
-height:42px;
-border-radius:50%;
+border:none;
 
-object-fit:cover;
+padding:14px 22px;
+
+border-radius:16px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.primary{
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4
+);
+
+color:white;
+
+box-shadow:
+0 10px 30px rgba(124,58,237,0.35);
+
+}
+
+.secondary{
+
+background:rgba(255,255,255,0.08);
+
+color:white;
+
+}
+
+.button:hover{
+
+transform:translateY(-3px);
 
 }
 
@@ -181,7 +204,7 @@ display:grid;
 grid-template-columns:
 repeat(auto-fit,minmax(250px,1fr));
 
-gap:22px;
+gap:25px;
 
 margin-bottom:35px;
 
@@ -191,18 +214,14 @@ margin-bottom:35px;
 
 background:rgba(255,255,255,0.05);
 
-backdrop-filter:blur(18px);
-
-padding:25px;
-
-border-radius:28px;
-
 border:
 1px solid rgba(255,255,255,0.06);
 
-position:relative;
+backdrop-filter:blur(18px);
 
-overflow:hidden;
+padding:28px;
+
+border-radius:28px;
 
 transition:0.3s;
 
@@ -210,181 +229,94 @@ transition:0.3s;
 
 .card:hover{
 
-transform:translateY(-5px);
-
-}
-
-.card::before{
-
-content:"";
-
-position:absolute;
-
-width:160px;
-height:160px;
-
-background:rgba(255,255,255,0.05);
-
-border-radius:50%;
-
-top:-60px;
-right:-60px;
+transform:translateY(-6px);
 
 }
 
 .card h3{
 
-font-size:16px;
-color:#cbd5e1;
+font-size:15px;
 
-margin-bottom:18px;
+color:#94a3b8;
+
+margin-bottom:14px;
 
 }
 
 .card h2{
 
-font-size:42px;
-font-weight:800;
+font-size:38px;
+
+font-weight:900;
 
 }
 
-.card span{
-
-display:block;
-margin-top:14px;
-
-font-size:14px;
-color:#00ffbf;
-
-}
-
-.grid{
+.content-grid{
 
 display:grid;
 
-grid-template-columns:
-2fr 1fr;
+grid-template-columns:2fr 1fr;
 
-gap:24px;
+gap:28px;
 
 }
 
 .chart-box,
-.activity-box{
+.products-box{
 
 background:rgba(255,255,255,0.05);
+
+border:
+1px solid rgba(255,255,255,0.06);
 
 backdrop-filter:blur(18px);
 
 border-radius:30px;
 
 padding:28px;
-
-border:
-1px solid rgba(255,255,255,0.06);
 
 }
 
 .chart-box h2,
-.activity-box h2{
+.products-box h2{
 
-margin-bottom:24px;
+margin-bottom:25px;
 
-font-size:22px;
-
-}
-
-.activity{
-
-display:flex;
-flex-direction:column;
-gap:16px;
+font-size:24px;
 
 }
 
-.activity-item{
-
-background:rgba(255,255,255,0.04);
-
-padding:16px;
-
-border-radius:18px;
+.product{
 
 display:flex;
-justify-content:space-between;
 align-items:center;
+justify-content:space-between;
 
-}
-
-.activity-item strong{
-
-font-size:14px;
-
-}
-
-.activity-item span{
-
-font-size:13px;
-color:#94a3b8;
-
-}
-
-.products{
-
-margin-top:28px;
-
-background:rgba(255,255,255,0.05);
-
-backdrop-filter:blur(18px);
-
-border-radius:30px;
-
-padding:28px;
-
-border:
-1px solid rgba(255,255,255,0.06);
-
-}
-
-.products h2{
-
-margin-bottom:22px;
-
-}
-
-table{
-
-width:100%;
-border-collapse:collapse;
-
-}
-
-th,td{
-
-padding:18px;
-text-align:left;
-
-}
-
-th{
-
-color:#94a3b8;
-
-font-size:14px;
-
-}
-
-tr{
+padding:18px 0;
 
 border-bottom:
 1px solid rgba(255,255,255,0.05);
 
 }
 
-.product-img{
+.product:last-child{
 
-width:60px;
-height:60px;
+border:none;
+
+}
+
+.product-info{
+
+display:flex;
+align-items:center;
+gap:15px;
+
+}
+
+.product img{
+
+width:58px;
+height:58px;
 
 border-radius:16px;
 
@@ -392,39 +324,32 @@ object-fit:cover;
 
 }
 
+.price{
+
+font-weight:800;
+
+color:#00ffbf;
+
+}
+
 .badge{
 
+padding:10px 14px;
+
 background:
-linear-gradient(
-90deg,
-#7c3aed,
-#06b6d4
-);
+rgba(0,255,191,0.12);
 
-padding:8px 14px;
+border-radius:12px;
 
-border-radius:999px;
+font-size:13px;
 
-font-size:12px;
 font-weight:700;
 
-display:inline-block;
+color:#00ffbf;
 
 }
 
 @media(max-width:1100px){
-
-.grid{
-
-grid-template-columns:1fr;
-
-}
-
-.sidebar{
-
-display:none;
-
-}
 
 body{
 
@@ -432,16 +357,27 @@ flex-direction:column;
 
 }
 
+.sidebar{
+
+width:100%;
+
+}
+
+.content-grid{
+
+grid-template-columns:1fr;
+
+}
+
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="sidebar">
-
-<div>
 
 <div class="logo">
 🚀 AutoVenda IA
@@ -449,27 +385,17 @@ flex-direction:column;
 
 <div class="menu">
 
-<button>📊 Dashboard</button>
+<a href="#">🏠 Dashboard</a>
 
-<button>🛍 Produtos</button>
+<a href="#">📦 Produtos</a>
 
-<button>🤖 Inteligência IA</button>
+<a href="#">💬 Conversas</a>
 
-<button>💬 Conversas</button>
+<a href="#">📈 Analytics</a>
 
-<button>📈 Analytics</button>
+<a href="#">🤖 Inteligência IA</a>
 
-<button>⚙ Configurações</button>
-
-</div>
-
-</div>
-
-<div class="menu">
-
-<button onclick="logout()">
-🚪 Sair
-</button>
+<a href="#">⚙️ Configurações</a>
 
 </div>
 
@@ -482,30 +408,24 @@ flex-direction:column;
 <div class="title">
 
 <h1>
-🌍 A nova geração de compras online no mundo
+📊 Dashboard Premium
 </h1>
 
 <p>
-Painel inteligente empresarial • AutoVenda IA 2026
+Painel global inteligente de vendas automáticas
 </p>
 
 </div>
 
-<div class="profile">
+<div class="top-actions">
 
-<img src="https://i.imgur.com/8Km9tLL.jpg">
+<button class="button secondary">
+🌍 Global
+</button>
 
-<div>
-
-<strong>
-Admin
-</strong>
-
-<p style="font-size:13px;color:#94a3b8;">
-Online agora
-</p>
-
-</div>
+<button class="button primary">
+🚀 Upgrade IA
+</button>
 
 </div>
 
@@ -515,134 +435,77 @@ Online agora
 
 <div class="card">
 
-<h3>🛍 Total Produtos</h3>
-
-<h2 id="productsCount">
-0
-</h2>
-
-<span>
-+12% este mês
-</span>
-
-</div>
-
-<div class="card">
-
-<h3>👥 Total Clientes</h3>
-
-<h2 id="clientsCount">
-0
-</h2>
-
-<span>
-+28% esta semana
-</span>
-
-</div>
-
-<div class="card">
-
-<h3>💬 Conversas IA</h3>
-
-<h2 id="messagesCount">
-0
-</h2>
-
-<span>
-IA super ativa
-</span>
-
-</div>
-
-<div class="card">
-
-<h3>💰 Receita Estimada</h3>
+<h3>
+💰 Receita Total
+</h3>
 
 <h2 id="revenue">
-$0
+0
 </h2>
 
-<span>
-Crescimento global 🚀
-</span>
+</div>
+
+<div class="card">
+
+<h3>
+📦 Produtos
+</h3>
+
+<h2 id="products">
+0
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>
+👥 Clientes
+</h3>
+
+<h2 id="clients">
+0
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>
+💬 Conversas
+</h3>
+
+<h2 id="messages">
+0
+</h2>
 
 </div>
 
 </div>
 
-<div class="grid">
+<div class="content-grid">
 
 <div class="chart-box">
 
 <h2>
-📈 Performance Global
+📈 Crescimento de vendas
 </h2>
 
 <canvas id="salesChart"></canvas>
 
 </div>
 
-<div class="activity-box">
+<div class="products-box">
 
 <h2>
-⚡ Atividade IA
+🔥 Produtos recentes
 </h2>
 
-<div class="activity">
-
-<div class="activity-item">
-<strong>🤖 IA respondeu cliente</strong>
-<span>agora mesmo</span>
-</div>
-
-<div class="activity-item">
-<strong>🛍 Produto vendido</strong>
-<span>2 min atrás</span>
-</div>
-
-<div class="activity-item">
-<strong>💬 Nova conversa</strong>
-<span>5 min atrás</span>
-</div>
-
-<div class="activity-item">
-<strong>📈 Analytics atualizado</strong>
-<span>online</span>
-</div>
+<div id="recentProducts">
 
 </div>
 
 </div>
-
-</div>
-
-<div class="products">
-
-<h2>
-🛒 Produtos Recentes
-</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Imagem</th>
-<th>Produto</th>
-<th>Preço</th>
-<th>Status</th>
-
-</tr>
-
-</thead>
-
-<tbody id="productsTable">
-
-</tbody>
-
-</table>
 
 </div>
 
@@ -660,7 +523,7 @@ window.location.href =
 
 }
 
-async function loadDashboard(){
+async function loadAnalytics(){
 
 try{
 
@@ -670,14 +533,10 @@ await fetch(
 "/admin/analytics",
 
 {
-
 headers:{
-
 Authorization:
 `Bearer ${token}`
-
 }
-
 }
 
 );
@@ -686,71 +545,61 @@ const data =
 await response.json();
 
 document.getElementById(
-"productsCount"
+"revenue"
+).innerText =
+"$" + data.revenue;
+
+document.getElementById(
+"products"
 ).innerText =
 data.products;
 
 document.getElementById(
-"clientsCount"
+"clients"
 ).innerText =
 data.clients;
 
 document.getElementById(
-"messagesCount"
+"messages"
 ).innerText =
-Number(data.clients) * 8;
+data.messages;
 
+const productsContainer =
 document.getElementById(
-"revenue"
-).innerText =
-"$" + (
-Number(data.products) * 120
+"recentProducts"
 );
 
-const table =
-document.getElementById(
-"productsTable"
-);
-
-table.innerHTML = "";
+productsContainer.innerHTML = "";
 
 data.recentProducts.forEach(product=>{
 
-table.innerHTML += `
+productsContainer.innerHTML += `
 
-<tr>
+<div class="product">
 
-<td>
-<img
-src="${product.image}"
-class="product-img">
-</td>
+<div class="product-info">
 
-<td>${product.name}</td>
+<img src="${product.image}">
 
-<td>${product.price}</td>
+<div>
 
-<td>
-<span class="badge">
-Ativo
-</span>
-</td>
+<h4>${product.name}</h4>
 
-</tr>
+<p>${product.description}</p>
+
+</div>
+
+</div>
+
+<div class="price">
+${product.price}
+</div>
+
+</div>
 
 `;
 
 });
-
-}catch(error){
-
-console.log(error);
-
-}
-
-}
-
-loadDashboard();
 
 const ctx =
 document.getElementById(
@@ -775,28 +624,21 @@ labels:[
 
 datasets:[{
 
-label:"Vendas IA",
+label:"Vendas",
 
 data:[
-12,
-19,
-15,
-25,
-32,
-44,
-58
+120,
+190,
+300,
+500,
+700,
+950,
+1200
 ],
 
 borderWidth:4,
 
-tension:0.4,
-
-fill:true,
-
-backgroundColor:
-"rgba(124,58,237,0.18)",
-
-borderColor:"#7c3aed"
+tension:0.4
 
 }]
 
@@ -809,9 +651,11 @@ responsive:true,
 plugins:{
 
 legend:{
+
 labels:{
 color:"white"
 }
+
 }
 
 },
@@ -820,13 +664,13 @@ scales:{
 
 x:{
 ticks:{
-color:"#94a3b8"
+color:"white"
 }
 },
 
 y:{
 ticks:{
-color:"#94a3b8"
+color:"white"
 }
 }
 
@@ -836,16 +680,15 @@ color:"#94a3b8"
 
 });
 
-function logout(){
+}catch(error){
 
-localStorage.removeItem(
-"token"
-);
-
-window.location.href =
-"/login.html";
+console.log(error);
 
 }
+
+}
+
+loadAnalytics();
 
 </script>
 
