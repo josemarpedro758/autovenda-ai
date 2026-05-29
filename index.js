@@ -1,3 +1,6 @@
+# INDEX.JS COMPLETO FINAL — COM ROTAS CORRIGIDAS
+
+```javascript
 const express = require("express");
 const axios = require("axios");
 const cloudinary = require("cloudinary").v2;
@@ -131,6 +134,10 @@ error:"Token inválido"
 
 }
 
+/* =========================
+ROTAS HTML CORRIGIDAS
+========================= */
+
 app.get("/",(req,res)=>{
 
 res.sendFile(
@@ -155,27 +162,9 @@ path.join(__dirname,"dashboard.html")
 
 });
 
-res.sendFile(
-path.join(__dirname,"index.html")
-);
-
-});
-
-app.get("/dashboard",(req,res)=>{
-
-res.sendFile(
-path.join(__dirname,"dashboard.html")
-);
-
-});
-
-app.get("/login",(req,res)=>{
-
-res.sendFile(
-path.join(__dirname,"login.html")
-);
-
-});
+/* =========================
+LOGIN
+========================= */
 
 app.post("/login",async(req,res)=>{
 
@@ -211,6 +200,10 @@ token
 
 });
 
+/* =========================
+UPLOAD IMAGEM
+========================= */
+
 app.post(
 "/upload-image",
 upload.single("image"),
@@ -242,6 +235,10 @@ error:error.message
 }
 
 });
+
+/* =========================
+PRODUTOS
+========================= */
 
 app.get(
 "/admin/products",
@@ -306,6 +303,10 @@ product:result.rows[0]
 
 });
 
+/* =========================
+ANALYTICS
+========================= */
+
 app.get(
 "/admin/analytics",
 authMiddleware,
@@ -346,6 +347,10 @@ recentProducts.rows
 });
 
 });
+
+/* =========================
+WEBHOOK WHATSAPP IA
+========================= */
 
 app.post(
 "/webhook",
@@ -590,3 +595,5 @@ console.log(
 );
 
 });
+```
+
