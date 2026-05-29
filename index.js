@@ -1,6 +1,3 @@
-# INDEX.JS COMPLETO FINAL — COM ROTAS CORRIGIDAS
-
-```javascript
 const express = require("express");
 const axios = require("axios");
 const cloudinary = require("cloudinary").v2;
