@@ -13,7 +13,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 
 <style>
 
@@ -25,8 +25,6 @@ font-family:'Inter',sans-serif;
 }
 
 body{
-
-display:flex;
 
 background:
 linear-gradient(
@@ -44,19 +42,29 @@ overflow-x:hidden;
 
 }
 
+/* =========================
+SIDEBAR
+========================= */
+
 .sidebar{
 
+position:fixed;
+
+left:0;
+top:0;
+
 width:280px;
+height:100vh;
 
 background:
-rgba(255,255,255,0.05);
-
-backdrop-filter:blur(20px);
+rgba(255,255,255,0.04);
 
 border-right:
 1px solid rgba(255,255,255,0.06);
 
-padding:30px;
+backdrop-filter:blur(25px);
+
+padding:35px 25px;
 
 }
 
@@ -84,96 +92,44 @@ linear-gradient(
 .menu{
 
 display:flex;
+
 flex-direction:column;
-gap:15px;
+
+gap:16px;
 
 }
 
-.menu a{
+.menu button{
 
-text-decoration:none;
-
-color:#cbd5e1;
-
-padding:16px;
-
-border-radius:18px;
-
-transition:0.3s;
-
-font-weight:700;
-
-}
-
-.menu a:hover{
-
-background:
-rgba(255,255,255,0.08);
-
-color:white;
-
-transform:translateX(5px);
-
-}
-
-.main{
-
-flex:1;
-
-padding:35px;
-
-}
-
-.topbar{
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-margin-bottom:35px;
-
-}
-
-.topbar h1{
-
-font-size:42px;
-
-font-weight:900;
-
-}
-
-.topbar p{
-
-color:#94a3b8;
-
-margin-top:10px;
-
-}
-
-.top-actions{
-
-display:flex;
-gap:15px;
-
-}
-
-.button{
+padding:18px;
 
 border:none;
 
-padding:15px 24px;
-
 border-radius:18px;
 
-font-weight:800;
+background:
+rgba(255,255,255,0.05);
+
+border:
+1px solid rgba(255,255,255,0.06);
+
+color:white;
+
+font-weight:700;
 
 cursor:pointer;
 
 transition:0.3s;
 
+text-align:left;
+
+font-size:15px;
+
 }
 
-.primary{
+.menu button:hover{
+
+transform:translateX(6px);
 
 background:
 linear-gradient(
@@ -182,35 +138,80 @@ linear-gradient(
 #06b6d4
 );
 
-color:white;
+}
+
+/* =========================
+MAIN
+========================= */
+
+.main{
+
+margin-left:280px;
+
+padding:40px;
 
 }
 
-.secondary{
+.topbar{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:40px;
+
+}
+
+.title{
+
+font-size:42px;
+
+font-weight:900;
+
+}
+
+.subtitle{
+
+color:#94a3b8;
+
+margin-top:8px;
+
+}
+
+.status{
+
+padding:14px 20px;
+
+border-radius:999px;
 
 background:
-rgba(255,255,255,0.08);
+rgba(0,255,170,0.1);
 
-color:white;
+border:
+1px solid rgba(0,255,170,0.2);
+
+color:#00ffbf;
+
+font-weight:700;
 
 }
 
-.button:hover{
-
-transform:translateY(-4px);
-
-}
+/* =========================
+CARDS
+========================= */
 
 .cards{
 
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,minmax(240px,1fr));
+repeat(auto-fit,minmax(260px,1fr));
 
 gap:25px;
 
-margin-bottom:35px;
+margin-bottom:40px;
 
 }
 
@@ -219,12 +220,12 @@ margin-bottom:35px;
 background:
 rgba(255,255,255,0.05);
 
+border:
+1px solid rgba(255,255,255,0.06);
+
 padding:30px;
 
 border-radius:28px;
-
-border:
-1px solid rgba(255,255,255,0.06);
 
 backdrop-filter:blur(20px);
 
@@ -238,15 +239,23 @@ transform:translateY(-6px);
 
 }
 
-.card h3{
+.card-icon{
 
-color:#94a3b8;
+font-size:42px;
 
-margin-bottom:15px;
+margin-bottom:20px;
 
 }
 
-.card h2{
+.card-title{
+
+color:#94a3b8;
+
+margin-bottom:10px;
+
+}
+
+.card-value{
 
 font-size:42px;
 
@@ -254,114 +263,59 @@ font-weight:900;
 
 }
 
+/* =========================
+GRID
+========================= */
+
 .grid{
 
 display:grid;
 
 grid-template-columns:2fr 1fr;
 
-gap:28px;
+gap:25px;
 
-margin-bottom:35px;
+margin-bottom:40px;
 
 }
 
-.box{
+.panel{
 
 background:
 rgba(255,255,255,0.05);
 
-padding:28px;
+border:
+1px solid rgba(255,255,255,0.06);
 
 border-radius:30px;
 
-border:
-1px solid rgba(255,255,255,0.06);
+padding:30px;
 
 backdrop-filter:blur(20px);
 
 }
 
-.box h2{
+.panel-title{
+
+font-size:24px;
+
+font-weight:800;
 
 margin-bottom:25px;
 
 }
 
-.product{
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-padding:18px 0;
-
-border-bottom:
-1px solid rgba(255,255,255,0.06);
-
-}
-
-.product:last-child{
-
-border:none;
-
-}
-
-.product-left{
-
-display:flex;
-gap:15px;
-align-items:center;
-
-}
-
-.product img{
-
-width:60px;
-height:60px;
-
-border-radius:18px;
-
-object-fit:cover;
-
-}
-
-.price{
-
-font-weight:900;
-
-color:#00ffbf;
-
-}
-
-.messages{
-
-max-height:400px;
-
-overflow-y:auto;
-
-}
-
-.message{
-
-background:
-rgba(255,255,255,0.05);
-
-padding:18px;
-
-border-radius:18px;
-
-margin-bottom:18px;
-
-}
+/* =========================
+FORM
+========================= */
 
 .form{
 
-margin-top:30px;
+display:flex;
 
-display:grid;
+flex-direction:column;
 
-gap:15px;
+gap:18px;
 
 }
 
@@ -374,48 +328,258 @@ border:none;
 border-radius:18px;
 
 background:
-rgba(255,255,255,0.08);
+rgba(255,255,255,0.06);
+
+border:
+1px solid rgba(255,255,255,0.06);
 
 color:white;
+
+font-size:15px;
 
 outline:none;
 
 }
 
-.select{
+.input::placeholder{
+
+color:#94a3b8;
+
+}
+
+.upload-btn{
 
 padding:18px;
 
 border:none;
 
-border-radius:18px;
+border-radius:20px;
+
+font-weight:800;
+
+font-size:16px;
+
+cursor:pointer;
 
 background:
-rgba(255,255,255,0.08);
+linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4
+);
 
 color:white;
 
-outline:none;
+transition:0.3s;
 
 }
 
-@media(max-width:1100px){
+.upload-btn:hover{
 
-body{
+transform:translateY(-4px);
+
+}
+
+/* =========================
+PRODUCTS
+========================= */
+
+.products{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(260px,1fr));
+
+gap:22px;
+
+margin-top:25px;
+
+}
+
+.product{
+
+background:
+rgba(255,255,255,0.04);
+
+border:
+1px solid rgba(255,255,255,0.06);
+
+border-radius:24px;
+
+overflow:hidden;
+
+transition:0.3s;
+
+}
+
+.product:hover{
+
+transform:translateY(-6px);
+
+}
+
+.product img{
+
+width:100%;
+height:220px;
+
+object-fit:cover;
+
+}
+
+.product-content{
+
+padding:22px;
+
+}
+
+.product-name{
+
+font-size:22px;
+
+font-weight:800;
+
+margin-bottom:10px;
+
+}
+
+.product-price{
+
+font-size:28px;
+
+font-weight:900;
+
+color:#00ffbf;
+
+margin-bottom:14px;
+
+}
+
+.product-desc{
+
+color:#94a3b8;
+
+line-height:1.7;
+
+margin-bottom:18px;
+
+}
+
+.product-type{
+
+display:inline-block;
+
+padding:10px 16px;
+
+border-radius:999px;
+
+background:
+rgba(124,58,237,0.2);
+
+font-size:13px;
+
+font-weight:700;
+
+}
+
+/* =========================
+MESSAGES
+========================= */
+
+.messages{
+
+display:flex;
 
 flex-direction:column;
 
+gap:18px;
+
+max-height:550px;
+
+overflow:auto;
+
 }
+
+.message{
+
+background:
+rgba(255,255,255,0.04);
+
+border:
+1px solid rgba(255,255,255,0.06);
+
+padding:20px;
+
+border-radius:22px;
+
+}
+
+.message-number{
+
+font-size:14px;
+
+color:#06b6d4;
+
+margin-bottom:10px;
+
+font-weight:700;
+
+}
+
+.message-user{
+
+margin-bottom:12px;
+
+color:#cbd5e1;
+
+}
+
+.message-ai{
+
+color:#00ffbf;
+
+line-height:1.7;
+
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:1100px){
 
 .sidebar{
 
-width:100%;
+display:none;
+
+}
+
+.main{
+
+margin-left:0;
 
 }
 
 .grid{
 
 grid-template-columns:1fr;
+
+}
+
+}
+
+@media(max-width:700px){
+
+.main{
+
+padding:25px;
+
+}
+
+.title{
+
+font-size:32px;
 
 }
 
@@ -435,29 +599,29 @@ grid-template-columns:1fr;
 
 <div class="menu">
 
-<a href="#">
-🏠 Dashboard
-</a>
+<button>
+📊 Dashboard
+</button>
 
-<a href="#">
-📦 Produtos
-</a>
+<button>
+🛍 Produtos
+</button>
 
-<a href="#">
-💬 Conversas
-</a>
+<button>
+🤖 IA
+</button>
 
-<a href="#">
+<button>
 📈 Analytics
-</a>
+</button>
 
-<a href="#">
-🤖 IA Inteligente
-</a>
+<button>
+💬 Conversas
+</button>
 
-<a href="#">
-⚙️ Configurações
-</a>
+<button onclick="logout()">
+🚪 Sair
+</button>
 
 </div>
 
@@ -469,26 +633,18 @@ grid-template-columns:1fr;
 
 <div>
 
-<h1>
-📊 Dashboard Premium
-</h1>
+<div class="title">
+Dashboard Premium
+</div>
 
-<p>
-Painel global inteligente em tempo real
-</p>
+<div class="subtitle">
+Painel global inteligente • Tempo real
+</div>
 
 </div>
 
-<div class="top-actions">
-
-<button class="button secondary">
-🌍 Global
-</button>
-
-<button class="button primary">
-🚀 AutoVenda IA
-</button>
-
+<div class="status">
+🟢 Sistema Online
 </div>
 
 </div>
@@ -497,49 +653,65 @@ Painel global inteligente em tempo real
 
 <div class="card">
 
-<h3>
-💰 Receita
-</h3>
+<div class="card-icon">
+🛍
+</div>
 
-<h2 id="revenue">
+<div class="card-title">
+Produtos
+</div>
+
+<div class="card-value" id="productsCount">
 0
-</h2>
+</div>
 
 </div>
 
 <div class="card">
 
-<h3>
-📦 Produtos
-</h3>
+<div class="card-icon">
+👥
+</div>
 
-<h2 id="products">
+<div class="card-title">
+Clientes
+</div>
+
+<div class="card-value" id="clientsCount">
 0
-</h2>
+</div>
 
 </div>
 
 <div class="card">
 
-<h3>
-👥 Clientes
-</h3>
+<div class="card-icon">
+💬
+</div>
 
-<h2 id="clients">
+<div class="card-title">
+Mensagens
+</div>
+
+<div class="card-value" id="messagesCount">
 0
-</h2>
+</div>
 
 </div>
 
 <div class="card">
 
-<h3>
-💬 Conversas
-</h3>
+<div class="card-icon">
+💰
+</div>
 
-<h2 id="messages">
-0
-</h2>
+<div class="card-title">
+Receita
+</div>
+
+<div class="card-value" id="revenueCount">
+0$
+</div>
 
 </div>
 
@@ -547,69 +719,55 @@ Painel global inteligente em tempo real
 
 <div class="grid">
 
-<div class="box">
+<div class="panel">
 
-<h2>
-📈 Analytics
-</h2>
+<div class="panel-title">
+📈 Analytics Global
+</div>
 
 <canvas id="chart"></canvas>
 
 </div>
 
-<div class="box">
+<div class="panel">
 
-<h2>
-🔥 Produtos Recentes
-</h2>
-
-<div id="recentProducts">
-
+<div class="panel-title">
+🚀 Novo Produto
 </div>
-
-</div>
-
-</div>
-
-<div class="grid">
-
-<div class="box">
-
-<h2>
-📦 Adicionar Produto
-</h2>
 
 <div class="form">
 
 <input
 type="text"
-placeholder="Nome produto"
 id="name"
 class="input"
+placeholder="Nome produto"
 >
 
 <input
 type="text"
-placeholder="Preço"
 id="price"
 class="input"
+placeholder="Preço"
 >
 
-<input
-type="text"
-placeholder="Descrição"
+<textarea
 id="description"
+class="input"
+placeholder="Descrição"
+></textarea>
+
+<select
+id="type"
 class="input"
 >
 
-<select id="type" class="select">
-
 <option value="fisico">
-Produto Físico
+Produto físico
 </option>
 
 <option value="digital">
-Produto Digital
+Produto digital
 </option>
 
 </select>
@@ -621,29 +779,38 @@ class="input"
 >
 
 <button
-class="button primary"
+class="upload-btn"
 onclick="createProduct()"
 >
-🚀 Salvar Produto
+🚀 Publicar Produto
 </button>
 
 </div>
 
 </div>
 
-<div class="box">
+</div>
 
-<h2>
-💬 Conversas Tempo Real
-</h2>
+<div class="panel">
 
-<div
-class="messages"
-id="messagesBox"
->
+<div class="panel-title">
+🛍 Produtos Publicados
+</div>
+
+<div class="products" id="products">
+</div>
 
 </div>
 
+<br>
+
+<div class="panel">
+
+<div class="panel-title">
+💬 Conversas em Tempo Real
+</div>
+
+<div class="messages" id="messages">
 </div>
 
 </div>
@@ -665,44 +832,52 @@ window.location.href =
 const socket = io();
 
 socket.on(
-"new-message",
-(data)=>{
-
-document.getElementById(
-"messagesBox"
-).innerHTML += `
-
-<div class="message">
-
-<strong>
-Cliente:
-</strong>
-
-${data.message}
-
-<br><br>
-
-<strong>
-IA:
-</strong>
-
-${data.response}
-
-</div>
-
-`;
-
+"new-product",
+()=>{
+loadProducts();
+loadAnalytics();
 }
 );
 
 socket.on(
-"new-product",
-(product)=>{
+"new-message",
+(data)=>{
+
+const messages =
+document.getElementById(
+"messages"
+);
+
+messages.innerHTML =
+
+`
+<div class="message">
+
+<div class="message-number">
+${data.number}
+</div>
+
+<div class="message-user">
+👤 ${data.message}
+</div>
+
+<div class="message-ai">
+🤖 ${data.response}
+</div>
+
+</div>
+`
+
++ messages.innerHTML;
 
 loadAnalytics();
 
 }
 );
+
+/* =========================
+ANALYTICS
+========================= */
 
 async function loadAnalytics(){
 
@@ -721,67 +896,30 @@ const data =
 await response.json();
 
 document.getElementById(
-"revenue"
-).innerText =
-"$" + data.revenue;
-
-document.getElementById(
-"products"
+"productsCount"
 ).innerText =
 data.products;
 
 document.getElementById(
-"clients"
+"clientsCount"
 ).innerText =
 data.clients;
 
 document.getElementById(
-"messages"
+"messagesCount"
 ).innerText =
 data.messages;
 
-const products =
 document.getElementById(
-"recentProducts"
-);
+"revenueCount"
+).innerText =
+"$" + data.revenue;
 
-products.innerHTML = "";
+createChart(data);
 
-data.recentProducts.forEach(product=>{
+}
 
-products.innerHTML += `
-
-<div class="product">
-
-<div class="product-left">
-
-<img src="${product.image}">
-
-<div>
-
-<h4>
-${product.name}
-</h4>
-
-<p>
-${product.description}
-</p>
-
-</div>
-
-</div>
-
-<div class="price">
-
-${product.price}
-
-</div>
-
-</div>
-
-`;
-
-});
+function createChart(data){
 
 const ctx =
 document.getElementById(
@@ -795,27 +933,21 @@ type:"line",
 data:{
 
 labels:[
-"Jan",
-"Fev",
-"Mar",
-"Abr",
-"Mai",
-"Jun",
-"Jul"
+"Produtos",
+"Clientes",
+"Mensagens",
+"Receita"
 ],
 
 datasets:[{
 
-label:"Vendas",
+label:"Analytics",
 
 data:[
-120,
-300,
-450,
-600,
-900,
-1200,
-1600
+data.products,
+data.clients,
+data.messages,
+data.revenue
 ],
 
 borderWidth:4,
@@ -824,11 +956,82 @@ tension:0.4
 
 }]
 
+},
+
+options:{
+responsive:true
 }
 
 });
 
 }
+
+/* =========================
+LOAD PRODUCTS
+========================= */
+
+async function loadProducts(){
+
+const response =
+await fetch(
+"/admin/products",
+{
+headers:{
+Authorization:
+`Bearer ${token}`
+}
+}
+);
+
+const products =
+await response.json();
+
+const productsDiv =
+document.getElementById(
+"products"
+);
+
+productsDiv.innerHTML = "";
+
+products.forEach(product=>{
+
+productsDiv.innerHTML +=
+
+`
+<div class="product">
+
+<img src="${product.image}">
+
+<div class="product-content">
+
+<div class="product-name">
+${product.name}
+</div>
+
+<div class="product-price">
+${product.price}
+</div>
+
+<div class="product-desc">
+${product.description}
+</div>
+
+<div class="product-type">
+${product.type}
+</div>
+
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+/* =========================
+CREATE PRODUCT
+========================= */
 
 async function createProduct(){
 
@@ -856,6 +1059,19 @@ const imageFile =
 document.getElementById(
 "image"
 ).files[0];
+
+if(
+!name ||
+!price ||
+!description ||
+!imageFile
+){
+
+return alert(
+"Preencha tudo"
+);
+
+}
 
 const formData =
 new FormData();
@@ -906,17 +1122,37 @@ uploadData.url
 }
 );
 
+alert(
+"Produto publicado 🚀"
+);
+
+loadProducts();
+
 loadAnalytics();
 
-alert(
-"Produto criado 🚀"
+}
+
+/* =========================
+LOGOUT
+========================= */
+
+function logout(){
+
+localStorage.removeItem(
+"token"
 );
+
+window.location.href =
+"/login";
 
 }
 
 loadAnalytics();
 
+loadProducts();
+
 </script>
 
 </body>
 </html>
+
