@@ -5,9 +5,15 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
+const cors = require("cors");
+
 const { Pool } = require("pg");
+
 const http = require("http");
+
 const { Server } = require("socket.io");
+
+require("dotenv").config();
 
 const app = express();
 
@@ -19,7 +25,19 @@ const io = new Server(server,{
   }
 });
 
+/* ======================================
+CONFIG
+====================================== */
+
+app.use(cors());
+
 app.use(express.json());
+
+app.use(
+  express.urlencoded({
+    extended:true
+  })
+);
 
 app.use(
   express.static(
@@ -27,88 +45,162 @@ app.use(
   )
 );
 
+/* ======================================
+UPLOAD
+====================================== */
+
 const upload = multer({
   dest:"uploads/"
 });
 
+/* ======================================
+DATABASE
+====================================== */
+
 const pool = new Pool({
-  connectionString:process.env.DATABASE_URL,
+  connectionString:
+  process.env.DATABASE_URL,
+
   ssl:{
     rejectUnauthorized:false
   }
 });
 
+/* ======================================
+CLOUDINARY
+====================================== */
+
 cloudinary.config({
-  cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
-  api_key:process.env.CLOUDINARY_API_KEY,
-  api_secret:process.env.CLOUDINARY_API_SECRET
+
+  cloud_name:
+  process.env.CLOUDINARY_CLOUD_NAME,
+
+  api_key:
+  process.env.CLOUDINARY_API_KEY,
+
+  api_secret:
+  process.env.CLOUDINARY_API_SECRET
+
 });
 
-const SECRET_KEY = "autovendaia_master";
+/* ======================================
+AUTH
+====================================== */
+
+const SECRET_KEY =
+"autovendaia_master_2026";
 
 const adminUser = {
-  email:"admin@autovendaia.com",
-  password:bcrypt.hashSync("123456",10)
+
+  email:
+  "admin@autovendaia.com",
+
+  password:
+  bcrypt.hashSync(
+    "123456",
+    10
+  )
+
 };
+
+/* ======================================
+CREATE TABLES
+====================================== */
 
 async function createTables(){
 
-  await pool.query(`
-  
-  CREATE TABLE IF NOT EXISTS products(
-  
-    id SERIAL PRIMARY KEY,
-    name TEXT,
-    price TEXT,
-    description TEXT,
-    image TEXT,
-    type TEXT
-  
-  )
-  
-  `);
+  try{
 
-  await pool.query(`
-  
-  CREATE TABLE IF NOT EXISTS clients(
-  
-    id SERIAL PRIMARY KEY,
-    number TEXT UNIQUE,
-    memory TEXT
-  
-  )
-  
-  `);
+    await pool.query(`
 
-  console.log("Banco conectado 🚀");
+      CREATE TABLE IF NOT EXISTS products(
+
+        id SERIAL PRIMARY KEY,
+
+        name TEXT,
+
+        price TEXT,
+
+        description TEXT,
+
+        image TEXT,
+
+        type TEXT,
+
+        created_at TIMESTAMP DEFAULT NOW()
+
+      )
+
+    `);
+
+    await pool.query(`
+
+      CREATE TABLE IF NOT EXISTS clients(
+
+        id SERIAL PRIMARY KEY,
+
+        number TEXT UNIQUE,
+
+        memory TEXT,
+
+        created_at TIMESTAMP DEFAULT NOW()
+
+      )
+
+    `);
+
+    console.log(
+      "Banco conectado 🚀"
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
 
 }
 
 createTables();
 
-function authMiddleware(req,res,next){
+/* ======================================
+AUTH MIDDLEWARE
+====================================== */
 
-  const authHeader = req.headers.authorization;
+function authMiddleware(
+  req,
+  res,
+  next
+){
+
+  const authHeader =
+  req.headers.authorization;
 
   if(!authHeader){
 
     return res.status(401).json({
+      success:false,
       error:"Token não enviado"
     });
 
   }
 
-  const token = authHeader.split(" ")[1];
+  const token =
+  authHeader.split(" ")[1];
 
   try{
 
-    jwt.verify(token,SECRET_KEY);
+    jwt.verify(
+      token,
+      SECRET_KEY
+    );
 
     next();
 
-  }catch{
+  }catch(error){
 
     return res.status(401).json({
+      success:false,
       error:"Token inválido"
     });
 
@@ -116,14 +208,17 @@ function authMiddleware(req,res,next){
 
 }
 
-/* =========================
+/* ======================================
 ROTAS HTML
-========================= */
+====================================== */
 
 app.get("/",(req,res)=>{
 
   res.sendFile(
-    path.join(__dirname,"index.html")
+    path.join(
+      __dirname,
+      "index.html"
+    )
   );
 
 });
@@ -131,7 +226,10 @@ app.get("/",(req,res)=>{
 app.get("/login",(req,res)=>{
 
   res.sendFile(
-    path.join(__dirname,"login.html")
+    path.join(
+      __dirname,
+      "login.html"
+    )
   );
 
 });
@@ -139,52 +237,79 @@ app.get("/login",(req,res)=>{
 app.get("/dashboard",(req,res)=>{
 
   res.sendFile(
-    path.join(__dirname,"dashboard.html")
+    path.join(
+      __dirname,
+      "dashboard.html"
+    )
   );
 
 });
 
-/* =========================
+/* ======================================
 LOGIN
-========================= */
+====================================== */
 
 app.post("/login",async(req,res)=>{
 
-  const { email,password } = req.body;
+  try{
 
-  if(
-    email !== adminUser.email ||
-    !bcrypt.compareSync(
-      password,
-      adminUser.password
-    )
-  ){
+    const {
+      email,
+      password
+    } = req.body;
 
-    return res.status(401).json({
-      error:"Credenciais inválidas"
+    if(
+      email !== adminUser.email ||
+      !bcrypt.compareSync(
+        password,
+        adminUser.password
+      )
+    ){
+
+      return res.status(401).json({
+        success:false,
+        error:"Credenciais inválidas"
+      });
+
+    }
+
+    const token = jwt.sign(
+
+      {
+        email
+      },
+
+      SECRET_KEY,
+
+      {
+        expiresIn:"7d"
+      }
+
+    );
+
+    return res.json({
+      success:true,
+      token
+    });
+
+  }catch(error){
+
+    return res.status(500).json({
+      success:false,
+      error:error.message
     });
 
   }
 
-  const token = jwt.sign(
-    { email },
-    SECRET_KEY,
-    { expiresIn:"7d" }
-  );
-
-  return res.json({
-    success:true,
-    token
-  });
-
 });
 
-/* =========================
-UPLOAD IMAGEM
-========================= */
+/* ======================================
+UPLOAD IMAGE
+====================================== */
 
 app.post(
   "/upload-image",
+
   upload.single("image"),
 
   async(req,res)=>{
@@ -216,125 +341,183 @@ app.post(
   }
 );
 
-/* =========================
-PRODUTOS
-========================= */
+/* ======================================
+GET PRODUCTS
+====================================== */
 
 app.get(
   "/admin/products",
+
   authMiddleware,
 
   async(req,res)=>{
 
-    const result =
-    await pool.query(
-      "SELECT * FROM products ORDER BY id DESC"
-    );
+    try{
 
-    return res.json(result.rows);
+      const result =
+      await pool.query(
+        "SELECT * FROM products ORDER BY id DESC"
+      );
+
+      return res.json(
+        result.rows
+      );
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
 
   }
 );
 
+/* ======================================
+CREATE PRODUCT
+====================================== */
+
 app.post(
   "/admin/products",
+
   authMiddleware,
 
   async(req,res)=>{
 
-    const {
-      name,
-      price,
-      description,
-      image,
-      type
-    } = req.body;
+    try{
 
-    const result =
-    await pool.query(
-
-      `
-      INSERT INTO products
-      (name,price,description,image,type)
-
-      VALUES($1,$2,$3,$4,$5)
-
-      RETURNING *
-      `,
-
-      [
+      const {
         name,
         price,
         description,
         image,
         type
-      ]
+      } = req.body;
 
-    );
+      const result =
+      await pool.query(
 
-    io.emit(
-      "new-product",
-      result.rows[0]
-    );
+        `
+        INSERT INTO products
+        (
+          name,
+          price,
+          description,
+          image,
+          type
+        )
 
-    return res.json({
-      success:true,
-      product:result.rows[0]
-    });
+        VALUES($1,$2,$3,$4,$5)
+
+        RETURNING *
+        `,
+
+        [
+          name,
+          price,
+          description,
+          image,
+          type
+        ]
+
+      );
+
+      io.emit(
+        "new-product",
+        result.rows[0]
+      );
+
+      return res.json({
+        success:true,
+        product:result.rows[0]
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
 
   }
 );
 
-/* =========================
+/* ======================================
 ANALYTICS
-========================= */
+====================================== */
 
 app.get(
   "/admin/analytics",
+
   authMiddleware,
 
   async(req,res)=>{
 
-    const productsCount =
-    await pool.query(
-      "SELECT COUNT(*) FROM products"
-    );
+    try{
 
-    const clientsCount =
-    await pool.query(
-      "SELECT COUNT(*) FROM clients"
-    );
+      const productsCount =
+      await pool.query(
+        "SELECT COUNT(*) FROM products"
+      );
 
-    const recentProducts =
-    await pool.query(
-      "SELECT * FROM products ORDER BY id DESC LIMIT 5"
-    );
+      const clientsCount =
+      await pool.query(
+        "SELECT COUNT(*) FROM clients"
+      );
 
-    return res.json({
+      const recentProducts =
+      await pool.query(
+        "SELECT * FROM products ORDER BY id DESC LIMIT 5"
+      );
 
-      products:
-      productsCount.rows[0].count,
+      return res.json({
 
-      clients:
-      clientsCount.rows[0].count,
+        success:true,
 
-      messages:
-      Number(clientsCount.rows[0].count) * 9,
+        products:
+        Number(
+          productsCount.rows[0].count
+        ),
 
-      revenue:
-      Number(productsCount.rows[0].count) * 200,
+        clients:
+        Number(
+          clientsCount.rows[0].count
+        ),
 
-      recentProducts:
-      recentProducts.rows
+        messages:
+        Number(
+          clientsCount.rows[0].count
+        ) * 8,
 
-    });
+        revenue:
+        Number(
+          productsCount.rows[0].count
+        ) * 250,
+
+        recentProducts:
+        recentProducts.rows
+
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
 
   }
 );
 
-/* =========================
-WEBHOOK WHATSAPP IA
-========================= */
+/* ======================================
+WEBHOOK WHATSAPP
+====================================== */
 
 app.post(
   "/webhook",
@@ -346,10 +529,10 @@ app.post(
       const data = req.body;
 
       const message =
-      data.data?.message?.conversation;
+      data?.data?.message?.conversation;
 
       const number =
-      data.data?.key?.remoteJid;
+      data?.data?.key?.remoteJid;
 
       if(!message){
 
@@ -359,8 +542,14 @@ app.post(
 
       const clientResult =
       await pool.query(
-        "SELECT * FROM clients WHERE number=$1",
+
+        `
+        SELECT * FROM clients
+        WHERE number=$1
+        `,
+
         [number]
+
       );
 
       let memory = "";
@@ -377,7 +566,11 @@ app.post(
       await pool.query(
 
         `
-        INSERT INTO clients(number,memory)
+        INSERT INTO clients
+        (
+          number,
+          memory
+        )
 
         VALUES($1,$2)
 
@@ -388,7 +581,10 @@ app.post(
         memory=$2
         `,
 
-        [number,memory]
+        [
+          number,
+          memory
+        ]
 
       );
 
@@ -408,11 +604,11 @@ app.post(
         Preço:
         ${product.price}
 
-        Descrição:
-        ${product.description}
-
         Tipo:
         ${product.type}
+
+        Descrição:
+        ${product.description}
         `
 
       ).join("\n");
@@ -429,51 +625,40 @@ app.post(
           messages:[
 
             {
+
               role:"system",
 
               content:`
 
-Você é uma IA premium chamada AutoVenda IA.
+Você é uma atendente premium de vendas.
 
-Você vende naturalmente no WhatsApp.
+Você vende produtos no WhatsApp.
 
 REGRAS:
 
+- Seja humana
+- Seja natural
 - Nunca diga que é IA
-- Converse como humana
-- Seja simpática
-- Recomende produtos
-- Convença naturalmente
 - Use emojis modernos moderadamente
+- Seja elegante
+- Seja persuasiva
+- Responda curto
 
 PAGAMENTO:
 
 - Produtos físicos:
-roupa,
-tênis,
-perfume,
-relógio,
-eletrônicos físicos
-
-podem usar:
-PAGAMENTO NA ENTREGA.
+podem usar pagamento na entrega.
 
 - Produtos digitais:
-ebook,
-curso,
-software,
-serviços digitais
+precisam pagamento antecipado.
 
-precisam:
-pagamento antecipado.
+Analise automaticamente.
 
-Analise o tipo do produto antes de responder.
-
-Produtos:
+Produtos cadastrados:
 
 ${productsText}
 
-Histórico:
+Histórico cliente:
 
 ${memory}
 
@@ -507,9 +692,12 @@ ${memory}
       );
 
       const aiMessage =
-      openaiResponse.data
+
+      openaiResponse
+      .data
       .choices[0]
-      .message.content;
+      .message
+      .content;
 
       memory += `\nIA: ${aiMessage}`;
 
@@ -517,11 +705,16 @@ ${memory}
 
         `
         UPDATE clients
+
         SET memory=$1
+
         WHERE number=$2
         `,
 
-        [memory,number]
+        [
+          memory,
+          number
+        ]
 
       );
 
@@ -565,15 +758,17 @@ ${memory}
   }
 );
 
+/* ======================================
+SERVER
+====================================== */
+
 const PORT =
 process.env.PORT || 3000;
 
 server.listen(PORT,()=>{
 
   console.log(
-    "AutoVenda IA Online 🚀"
+    `Servidor rodando na porta ${PORT} 🚀`
   );
 
 });
-
-
