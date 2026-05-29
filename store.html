@@ -3,16 +3,13 @@
 <head>
 
 <meta charset="UTF-8"/>
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>AutoVenda IA Store</title>
+<title>AutoVenda IA</title>
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 
@@ -25,63 +22,62 @@ box-sizing:border-box;
 body{
 
 font-family:'Inter',sans-serif;
-background:#030712;
+background:#020617;
 color:white;
 overflow-x:hidden;
 
 }
 
-.background{
+/* BACKGROUND */
+
+body::before{
+
+content:"";
 
 position:fixed;
 inset:0;
 
-background-image:
+background:
 
-linear-gradient(
-rgba(3,7,18,0.78),
-rgba(3,7,18,0.92)
-),
+radial-gradient(circle at top left,#7c3aed22,transparent 30%),
+radial-gradient(circle at bottom right,#06b6d422,transparent 30%),
+linear-gradient(to bottom,#020617,#030712);
 
-url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2070');
-
-background-size:cover;
-background-position:center;
-
-z-index:-1;
+z-index:-2;
 
 }
 
+/* NAVBAR */
+
 header{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
 
 display:flex;
 justify-content:space-between;
 align-items:center;
 
-padding:28px 40px;
+padding:24px 70px;
 
-position:sticky;
-top:0;
+backdrop-filter:blur(16px);
 
-backdrop-filter:blur(18px);
+background:rgba(2,6,23,0.55);
 
-background:
-rgba(255,255,255,0.03);
+border-bottom:1px solid rgba(255,255,255,0.05);
 
-border-bottom:
-1px solid rgba(255,255,255,0.05);
-
-z-index:100;
+z-index:1000;
 
 }
 
 .logo{
 
 font-size:30px;
-font-weight:800;
+font-weight:900;
 
-background:
-linear-gradient(
+background:linear-gradient(
 90deg,
 #7c3aed,
 #06b6d4,
@@ -93,67 +89,114 @@ linear-gradient(
 
 }
 
+/* HERO */
+
 .hero{
 
-min-height:85vh;
+min-height:100vh;
 
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 
-padding:60px 30px;
+padding:160px 30px 100px;
 
-text-align:center;
+position:relative;
+
+overflow:hidden;
+
+}
+
+.hero::before{
+
+content:"";
+
+position:absolute;
+
+width:700px;
+height:700px;
+
+background:#7c3aed;
+
+filter:blur(160px);
+
+opacity:0.15;
+
+top:-250px;
+left:-200px;
+
+z-index:-1;
+
+}
+
+.hero::after{
+
+content:"";
+
+position:absolute;
+
+width:600px;
+height:600px;
+
+background:#06b6d4;
+
+filter:blur(160px);
+
+opacity:0.12;
+
+bottom:-250px;
+right:-200px;
+
+z-index:-1;
 
 }
 
 .hero-content{
 
-max-width:1000px;
+max-width:1200px;
+text-align:center;
 
 }
 
 .hero-badge{
 
-display:inline-block;
+display:inline-flex;
+align-items:center;
+gap:10px;
 
-padding:12px 22px;
+padding:14px 26px;
 
 border-radius:999px;
 
-background:
-rgba(255,255,255,0.06);
+background:rgba(255,255,255,0.05);
 
-border:
-1px solid rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.08);
 
-margin-bottom:30px;
+backdrop-filter:blur(10px);
 
-font-size:14px;
+margin-bottom:35px;
 
+font-size:15px;
 color:#cbd5e1;
-
-backdrop-filter:blur(12px);
 
 }
 
 .hero h1{
 
-font-size:78px;
-line-height:1;
+font-size:92px;
+line-height:0.95;
 
-font-weight:800;
+font-weight:900;
 
-margin-bottom:30px;
+letter-spacing:-5px;
 
-letter-spacing:-3px;
+margin-bottom:35px;
 
 }
 
 .gradient{
 
-background:
-linear-gradient(
+background:linear-gradient(
 90deg,
 #7c3aed,
 #06b6d4,
@@ -167,31 +210,123 @@ linear-gradient(
 
 .hero p{
 
-font-size:22px;
+font-size:24px;
+line-height:1.8;
 
-line-height:1.7;
+color:#94a3b8;
 
-color:#cbd5e1;
-
-max-width:850px;
+max-width:900px;
 margin:auto;
+
+margin-bottom:45px;
 
 }
 
+/* CTA */
+
+.hero-buttons{
+
+display:flex;
+justify-content:center;
+gap:20px;
+
+flex-wrap:wrap;
+
+}
+
+.primary-btn{
+
+padding:20px 34px;
+
+border:none;
+border-radius:18px;
+
+background:linear-gradient(
+135deg,
+#7c3aed,
+#06b6d4
+);
+
+font-size:16px;
+font-weight:700;
+
+color:white;
+
+cursor:pointer;
+
+transition:0.3s;
+
+box-shadow:
+0 10px 40px rgba(124,58,237,0.3);
+
+}
+
+.primary-btn:hover{
+
+transform:translateY(-4px);
+
+}
+
+.secondary-btn{
+
+padding:20px 34px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,0.04);
+
+border:1px solid rgba(255,255,255,0.08);
+
+color:white;
+
+font-size:16px;
+font-weight:600;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.secondary-btn:hover{
+
+background:rgba(255,255,255,0.08);
+
+}
+
+/* PRODUCTS */
+
 .products-section{
 
-padding:40px 30px 100px;
+padding:120px 40px;
+
+max-width:1600px;
+margin:auto;
 
 }
 
 .section-title{
 
-font-size:42px;
-font-weight:700;
-
-margin-bottom:40px;
+font-size:58px;
+font-weight:900;
 
 text-align:center;
+
+margin-bottom:20px;
+
+letter-spacing:-2px;
+
+}
+
+.section-subtitle{
+
+text-align:center;
+
+color:#94a3b8;
+
+font-size:20px;
+
+margin-bottom:70px;
 
 }
 
@@ -200,51 +335,53 @@ text-align:center;
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,minmax(320px,1fr));
+repeat(auto-fit,minmax(340px,1fr));
 
-gap:30px;
-
-max-width:1500px;
-margin:auto;
+gap:35px;
 
 }
 
 .product{
 
+position:relative;
+
 background:
-rgba(255,255,255,0.05);
+linear-gradient(
+180deg,
+rgba(255,255,255,0.06),
+rgba(255,255,255,0.03)
+);
 
 border:
-1px solid rgba(255,255,255,0.06);
+1px solid rgba(255,255,255,0.08);
 
 border-radius:30px;
 
 overflow:hidden;
 
-backdrop-filter:blur(18px);
-
 transition:0.4s;
+
+backdrop-filter:blur(14px);
 
 }
 
 .product:hover{
 
 transform:
-translateY(-10px)
-scale(1.01);
+translateY(-10px);
 
 border-color:
 rgba(124,58,237,0.4);
 
 box-shadow:
-0 20px 60px rgba(124,58,237,0.15);
+0 20px 80px rgba(124,58,237,0.18);
 
 }
 
 .product img{
 
 width:100%;
-height:320px;
+height:260px;
 
 object-fit:cover;
 
@@ -252,55 +389,57 @@ object-fit:cover;
 
 .product-content{
 
-padding:25px;
+padding:30px;
 
 }
 
 .product h2{
 
-font-size:28px;
+font-size:30px;
+font-weight:800;
+
 margin-bottom:15px;
 
 }
 
 .product p{
 
-color:#cbd5e1;
+color:#94a3b8;
 
 line-height:1.7;
 
-margin-bottom:20px;
+margin-bottom:25px;
 
 }
 
 .price{
 
-font-size:34px;
-font-weight:800;
+font-size:42px;
+font-weight:900;
 
-margin-bottom:20px;
+margin-bottom:25px;
 
 }
 
 .buy-btn{
 
 width:100%;
+
 padding:18px;
 
 border:none;
 border-radius:18px;
 
-background:
-linear-gradient(
+background:linear-gradient(
 135deg,
 #22c55e,
 #16a34a
 );
 
-color:white;
-
 font-size:16px;
 font-weight:700;
+
+color:white;
 
 cursor:pointer;
 
@@ -312,33 +451,40 @@ transition:0.3s;
 
 transform:translateY(-3px);
 
-opacity:0.95;
-
 }
+
+/* FOOTER */
 
 footer{
 
-padding:60px 30px;
+padding:60px 20px;
 
 text-align:center;
 
-color:#94a3b8;
-
 border-top:
-1px solid rgba(255,255,255,0.05);
+1px solid rgba(255,255,255,0.06);
 
-background:
-rgba(255,255,255,0.02);
+color:#64748b;
 
-backdrop-filter:blur(12px);
+margin-top:80px;
 
 }
 
+/* RESPONSIVO */
+
 @media(max-width:900px){
+
+header{
+
+padding:22px;
+
+}
 
 .hero h1{
 
-font-size:52px;
+font-size:58px;
+
+line-height:1.05;
 
 }
 
@@ -348,9 +494,9 @@ font-size:18px;
 
 }
 
-header{
+.section-title{
 
-padding:22px;
+font-size:42px;
 
 }
 
@@ -361,8 +507,6 @@ padding:22px;
 </head>
 
 <body>
-
-<div class="background"></div>
 
 <header>
 
@@ -378,7 +522,7 @@ AutoVenda IA
 
 <div class="hero-badge">
 
-🚀 A nova geração de vendas inteligentes no mundo
+🚀 Plataforma Inteligente de Vendas Automáticas
 
 </div>
 
@@ -386,16 +530,32 @@ AutoVenda IA
 
 Transforme seu negócio com
 <span class="gradient">
-Inteligência Artificial.
+Inteligência Artificial
 </span>
 
 </h1>
 
 <p>
 
-Uma plataforma premium de vendas automáticas criada para empresas modernas, marcas globais e o futuro do comércio digital.
+Automatize vendas no WhatsApp com uma experiência premium, moderna e escalável criada para empresas que desejam dominar o futuro digital.
 
 </p>
+
+<div class="hero-buttons">
+
+<button class="primary-btn">
+
+Começar Agora
+
+</button>
+
+<button class="secondary-btn">
+
+Ver Demonstração
+
+</button>
+
+</div>
 
 </div>
 
@@ -409,9 +569,13 @@ Produtos em destaque
 
 </h2>
 
-<div
-class="products"
-id="products">
+<p class="section-subtitle">
+
+Soluções premium criadas para automatizar vendas e aumentar resultados.
+
+</p>
+
+<div class="products" id="products">
 
 </div>
 
@@ -419,7 +583,7 @@ id="products">
 
 <footer>
 
-AutoVenda IA © 2026 — Global AI Commerce Platform
+AutoVenda IA © 2026 — Plataforma Global de Automação Inteligente
 
 </footer>
 
@@ -505,20 +669,15 @@ const number =
 
 const message =
 encodeURIComponent(
-
 "Olá, tenho interesse no produto: " + name
-
 );
 
 window.open(
-
 "https://wa.me/" +
 number +
 "?text=" +
 message,
-
 "_blank"
-
 );
 
 }
@@ -529,3 +688,4 @@ loadProducts();
 
 </body>
 </html>
+
