@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
 
-<meta charset="UTF-8" />
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
 
-<title>AutoVenda IA Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
+<title>Login • AutoVenda IA</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 
@@ -20,119 +17,207 @@ rel="stylesheet">
 margin:0;
 padding:0;
 box-sizing:border-box;
+font-family:'Inter',sans-serif;
 }
 
 body{
 
-font-family:'Inter',sans-serif;
-height:100vh;
-overflow:hidden;
-background:#050816;
+min-height:100vh;
+
 display:flex;
 
+background:
+linear-gradient(
+135deg,
+#020617,
+#0f172a,
+#111827
+);
+
+overflow:hidden;
+
+color:white;
+
 }
+
+/* =========================
+LEFT
+========================= */
 
 .left{
 
 flex:1;
+
 position:relative;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
 overflow:hidden;
 
 }
 
 .left img{
 
+position:absolute;
+
 width:100%;
 height:100%;
+
 object-fit:cover;
 
-filter:brightness(0.7);
+opacity:0.35;
 
 }
 
 .overlay{
 
 position:absolute;
+
 inset:0;
 
 background:
 linear-gradient(
 135deg,
-rgba(124,58,237,0.6),
-rgba(6,182,212,0.4)
+rgba(2,6,23,0.75),
+rgba(15,23,42,0.88)
 );
 
-display:flex;
-flex-direction:column;
-justify-content:flex-end;
+}
+
+.left-content{
+
+position:relative;
+
+z-index:2;
 
 padding:60px;
 
+max-width:700px;
+
 }
 
-.overlay h1{
+.badge{
 
-font-size:56px;
-line-height:1.1;
+display:inline-flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:12px 20px;
+
+border-radius:999px;
+
+background:
+rgba(255,255,255,0.06);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+margin-bottom:30px;
+
 font-weight:700;
 
-margin-bottom:20px;
-
-color:white;
-
-max-width:600px;
+color:#cbd5e1;
 
 }
 
-.overlay p{
+.left h1{
 
-font-size:18px;
-color:rgba(255,255,255,0.8);
+font-size:72px;
 
-max-width:500px;
-line-height:1.6;
+line-height:1.05;
+
+font-weight:900;
+
+margin-bottom:30px;
 
 }
+
+.gradient{
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4,
+#00ffbf
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.left p{
+
+font-size:22px;
+
+line-height:1.8;
+
+color:#cbd5e1;
+
+}
+
+/* =========================
+RIGHT
+========================= */
 
 .right{
 
-width:480px;
-
-background:
-rgba(255,255,255,0.04);
-
-backdrop-filter:blur(25px);
-
-border-left:
-1px solid rgba(255,255,255,0.05);
+width:520px;
 
 display:flex;
-justify-content:center;
+
 align-items:center;
 
-padding:40px;
+justify-content:center;
+
+padding:50px;
+
+position:relative;
 
 }
 
 .login-box{
 
 width:100%;
-max-width:360px;
+
+background:
+rgba(255,255,255,0.05);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+backdrop-filter:blur(25px);
+
+padding:45px;
+
+border-radius:36px;
+
+box-shadow:
+0 30px 80px rgba(0,0,0,0.45);
 
 }
 
 .logo{
 
-font-size:32px;
-font-weight:700;
+font-size:34px;
 
-margin-bottom:10px;
+font-weight:900;
+
+margin-bottom:15px;
 
 background:
 linear-gradient(
 90deg,
 #7c3aed,
-#06b6d4
+#06b6d4,
+#00ffbf
 );
 
 -webkit-background-clip:text;
@@ -143,79 +228,85 @@ linear-gradient(
 .subtitle{
 
 color:#94a3b8;
+
 margin-bottom:40px;
-line-height:1.6;
+
+line-height:1.7;
 
 }
 
-.input-group{
+.form{
 
-margin-bottom:20px;
+display:flex;
 
-}
+flex-direction:column;
 
-.input-group label{
-
-display:block;
-margin-bottom:10px;
-
-font-size:14px;
-color:#cbd5e1;
+gap:20px;
 
 }
 
-.input-group input{
+.input{
 
-width:100%;
-padding:18px;
+padding:20px;
 
 border:none;
-outline:none;
 
-border-radius:18px;
+border-radius:20px;
 
 background:
-rgba(255,255,255,0.05);
-
-color:white;
-font-size:15px;
+rgba(255,255,255,0.06);
 
 border:
 1px solid rgba(255,255,255,0.06);
+
+color:white;
+
+font-size:16px;
+
+outline:none;
 
 transition:0.3s;
 
 }
 
-.input-group input:focus{
+.input:focus{
 
-border-color:#7c3aed;
-box-shadow:
-0 0 20px rgba(124,58,237,0.3);
+border:
+1px solid #06b6d4;
+
+transform:translateY(-2px);
+
+}
+
+.input::placeholder{
+
+color:#94a3b8;
 
 }
 
 .login-btn{
 
-width:100%;
-padding:18px;
+padding:20px;
 
 border:none;
-border-radius:18px;
+
+border-radius:22px;
+
+font-size:17px;
+
+font-weight:800;
+
+cursor:pointer;
 
 background:
 linear-gradient(
-135deg,
+90deg,
 #7c3aed,
 #06b6d4
 );
 
 color:white;
 
-font-size:16px;
-font-weight:600;
-
-cursor:pointer;
 transition:0.3s;
 
 margin-top:10px;
@@ -224,32 +315,37 @@ margin-top:10px;
 
 .login-btn:hover{
 
-transform:translateY(-2px);
-
-opacity:0.9;
+transform:translateY(-4px);
 
 }
 
-#error{
+.info{
 
-margin-top:20px;
-color:#ef4444;
+margin-top:30px;
+
+padding:20px;
+
+border-radius:22px;
+
+background:
+rgba(255,255,255,0.04);
+
+border:
+1px solid rgba(255,255,255,0.06);
+
+color:#94a3b8;
+
+line-height:1.8;
 
 font-size:14px;
 
 }
 
-.footer{
+/* =========================
+RESPONSIVE
+========================= */
 
-margin-top:30px;
-color:#64748b;
-
-font-size:13px;
-text-align:center;
-
-}
-
-@media(max-width:1000px){
+@media(max-width:1100px){
 
 .left{
 
@@ -265,11 +361,29 @@ width:100%;
 
 body{
 
-background:
-url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070');
+justify-content:center;
 
-background-size:cover;
-background-position:center;
+}
+
+}
+
+@media(max-width:600px){
+
+.right{
+
+padding:25px;
+
+}
+
+.login-box{
+
+padding:35px 25px;
+
+}
+
+.logo{
+
+font-size:28px;
 
 }
 
@@ -283,19 +397,28 @@ background-position:center;
 
 <div class="left">
 
-<img
-src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=2070"
->
+<img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1800&auto=format&fit=crop">
 
-<div class="overlay">
+<div class="overlay"></div>
+
+<div class="left-content">
+
+<div class="badge">
+🌍 Plataforma global inteligente
+</div>
 
 <h1>
-Automatize suas vendas com IA.
+
+Automatize suas vendas com
+<span class="gradient">
+IA premium
+</span>
+
 </h1>
 
 <p>
 
-Transforme o WhatsApp em uma máquina automática de vendas com inteligência artificial premium.
+Transforme o WhatsApp numa central moderna de vendas com analytics, inteligência artificial e automação em tempo real.
 
 </p>
 
@@ -308,57 +431,55 @@ Transforme o WhatsApp em uma máquina automática de vendas com inteligência ar
 <div class="login-box">
 
 <div class="logo">
-AutoVenda IA
+🚀 AutoVenda IA
 </div>
 
-<div class="subtitle">
+<p class="subtitle">
 
-Acesse seu painel inteligente de automação e vendas.
+Entre na plataforma premium de automação global de vendas.
 
-</div>
+</p>
 
-<div class="input-group">
-
-<label>
-Email
-</label>
+<div class="form">
 
 <input
 type="email"
 id="email"
-placeholder="admin@autovendaia.com"
-/>
-
-</div>
-
-<div class="input-group">
-
-<label>
-Senha
-</label>
+class="input"
+placeholder="Seu email"
+>
 
 <input
 type="password"
 id="password"
-placeholder="••••••••"
-/>
-
-</div>
+class="input"
+placeholder="Sua senha"
+>
 
 <button
 class="login-btn"
 onclick="login()"
 >
-
-Entrar no painel
-
+Entrar Plataforma
 </button>
 
-<div id="error"></div>
+</div>
 
-<div class="footer">
+<div class="info">
 
-AutoVenda IA © 2026
+<strong>
+Acesso padrão:
+</strong>
+
+<br><br>
+
+Email:
+admin@autovendaia.com
+
+<br><br>
+
+Senha:
+123456
 
 </div>
 
@@ -367,9 +488,6 @@ AutoVenda IA © 2026
 </div>
 
 <script>
-
-const API_URL =
-"https://autovenda-ai.onrender.com";
 
 async function login(){
 
@@ -383,16 +501,18 @@ document.getElementById(
 "password"
 ).value;
 
-const response = await fetch(
+try{
 
-API_URL + "/login",
-
+const response =
+await fetch(
+"/login",
 {
 
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":
+"application/json"
 },
 
 body:JSON.stringify({
@@ -401,7 +521,6 @@ password
 })
 
 }
-
 );
 
 const data =
@@ -415,14 +534,21 @@ data.token
 );
 
 window.location.href =
-"/dashboard.html";
+"/dashboard";
 
 }else{
 
-document.getElementById(
-"error"
-).innerText =
-"Email ou senha inválidos";
+alert(
+data.error || "Erro login"
+);
+
+}
+
+}catch(error){
+
+alert(
+"Erro conexão servidor"
+);
 
 }
 
@@ -433,9 +559,3 @@ document.getElementById(
 </body>
 </html>
 
-}
-
-</script>
-
-</body>
-</html>
