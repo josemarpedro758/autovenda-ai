@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AutoVenda IA • A Nova Geração de Compras Online no Mundo</title>
+<title>AutoVenda IA • Plataforma Global</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -30,85 +30,185 @@ linear-gradient(
 #111827
 );
 
-color:white;
+min-height:100vh;
 
 overflow-x:hidden;
 
+color:white;
+
 }
+
+/* =========================
+HEADER
+========================= */
+
+header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:28px 8%;
+
+position:fixed;
+
+top:0;
+
+width:100%;
+
+z-index:999;
+
+backdrop-filter:blur(20px);
+
+background:
+rgba(2,6,23,0.45);
+
+border-bottom:
+1px solid rgba(255,255,255,0.06);
+
+}
+
+.logo{
+
+font-size:32px;
+
+font-weight:900;
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4,
+#00ffbf
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.nav{
+
+display:flex;
+
+gap:18px;
+
+align-items:center;
+
+}
+
+.nav a{
+
+text-decoration:none;
+
+color:#cbd5e1;
+
+font-weight:700;
+
+transition:0.3s;
+
+}
+
+.nav a:hover{
+
+color:white;
+
+}
+
+.login-btn{
+
+padding:14px 24px;
+
+border:none;
+
+border-radius:18px;
+
+font-weight:800;
+
+cursor:pointer;
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#06b6d4
+);
+
+color:white;
+
+transition:0.3s;
+
+}
+
+.login-btn:hover{
+
+transform:translateY(-4px);
+
+}
+
+/* =========================
+HERO
+========================= */
 
 .hero{
 
 min-height:100vh;
 
 display:flex;
+
 align-items:center;
+
 justify-content:space-between;
 
-padding:80px;
+padding:120px 8% 80px;
 
-position:relative;
-
-}
-
-.hero::before{
-
-content:"";
-
-position:absolute;
-
-width:700px;
-height:700px;
-
-background:
-radial-gradient(
-circle,
-rgba(124,58,237,0.35),
-transparent
-);
-
-top:-200px;
-right:-200px;
+gap:60px;
 
 }
 
-.left{
+.hero-left{
 
-max-width:650px;
-
-z-index:2;
+flex:1;
 
 }
 
 .badge{
 
-display:inline-block;
+display:inline-flex;
 
-padding:12px 20px;
+align-items:center;
 
-border-radius:50px;
+gap:10px;
+
+padding:12px 18px;
+
+border-radius:999px;
 
 background:
-rgba(255,255,255,0.08);
+rgba(255,255,255,0.06);
 
-backdrop-filter:blur(10px);
+border:
+1px solid rgba(255,255,255,0.08);
 
-margin-bottom:30px;
+margin-bottom:28px;
+
+color:#cbd5e1;
 
 font-weight:700;
 
-color:#00ffbf;
-
 }
 
-.left h1{
+.hero-title{
 
-font-size:78px;
+font-size:72px;
 
 line-height:1.05;
 
 font-weight:900;
 
-margin-bottom:25px;
+margin-bottom:28px;
 
 }
 
@@ -127,50 +227,43 @@ linear-gradient(
 
 }
 
-.left p{
+.hero-description{
 
-font-size:20px;
+font-size:22px;
 
 line-height:1.8;
 
-color:#cbd5e1;
+color:#94a3b8;
 
-margin-bottom:40px;
+max-width:700px;
+
+margin-bottom:38px;
 
 }
 
-.buttons{
+.hero-buttons{
 
 display:flex;
+
 gap:20px;
+
+flex-wrap:wrap;
 
 }
 
-.btn{
+.primary-btn{
 
-padding:18px 30px;
+padding:18px 32px;
 
 border:none;
 
-border-radius:18px;
+border-radius:22px;
+
+font-size:17px;
 
 font-weight:800;
 
 cursor:pointer;
-
-font-size:16px;
-
-transition:0.3s;
-
-text-decoration:none;
-
-display:inline-flex;
-align-items:center;
-justify-content:center;
-
-}
-
-.primary{
 
 background:
 linear-gradient(
@@ -181,113 +274,269 @@ linear-gradient(
 
 color:white;
 
-box-shadow:
-0 20px 50px rgba(124,58,237,0.35);
+transition:0.3s;
 
 }
 
-.secondary{
-
-background:
-rgba(255,255,255,0.08);
-
-color:white;
-
-border:
-1px solid rgba(255,255,255,0.08);
-
-}
-
-.btn:hover{
+.primary-btn:hover{
 
 transform:translateY(-5px);
 
 }
 
-.right{
+.secondary-btn{
 
-z-index:2;
+padding:18px 32px;
 
-}
+border:none;
 
-.mockup{
+border-radius:22px;
 
-width:700px;
+font-size:17px;
 
-border-radius:35px;
+font-weight:800;
 
-box-shadow:
-0 30px 80px rgba(0,0,0,0.45);
+cursor:pointer;
+
+background:
+rgba(255,255,255,0.06);
 
 border:
 1px solid rgba(255,255,255,0.08);
 
-}
-
-.stats{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(250px,1fr));
-
-gap:25px;
-
-padding:80px;
-
-}
-
-.card{
-
-background:
-rgba(255,255,255,0.05);
-
-padding:35px;
-
-border-radius:28px;
-
-backdrop-filter:blur(20px);
-
-border:
-1px solid rgba(255,255,255,0.06);
+color:white;
 
 transition:0.3s;
 
 }
 
-.card:hover{
+.secondary-btn:hover{
 
-transform:translateY(-8px);
-
-}
-
-.card h2{
-
-font-size:50px;
-
-margin-bottom:15px;
+transform:translateY(-5px);
 
 }
 
-.card p{
+/* =========================
+HERO IMAGE
+========================= */
 
-color:#cbd5e1;
+.hero-right{
 
-font-size:18px;
+flex:1;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
 
 }
 
-.footer{
+.dashboard-preview{
 
-padding:60px;
+width:100%;
+
+max-width:760px;
+
+border-radius:40px;
+
+overflow:hidden;
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+box-shadow:
+0 40px 100px rgba(0,0,0,0.45);
+
+}
+
+.dashboard-preview img{
+
+width:100%;
+
+display:block;
+
+}
+
+/* =========================
+FEATURES
+========================= */
+
+.features{
+
+padding:120px 8%;
+
+}
+
+.section-title{
+
+font-size:54px;
+
+font-weight:900;
+
+text-align:center;
+
+margin-bottom:20px;
+
+}
+
+.section-description{
 
 text-align:center;
 
 color:#94a3b8;
 
+font-size:20px;
+
+max-width:800px;
+
+margin:auto;
+
+line-height:1.8;
+
+margin-bottom:70px;
+
 }
 
-@media(max-width:1200px){
+.features-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:30px;
+
+}
+
+.feature-card{
+
+background:
+rgba(255,255,255,0.05);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+padding:38px;
+
+border-radius:34px;
+
+backdrop-filter:blur(20px);
+
+transition:0.3s;
+
+}
+
+.feature-card:hover{
+
+transform:translateY(-8px);
+
+}
+
+.feature-icon{
+
+font-size:48px;
+
+margin-bottom:25px;
+
+}
+
+.feature-card h3{
+
+font-size:28px;
+
+margin-bottom:18px;
+
+}
+
+.feature-card p{
+
+color:#94a3b8;
+
+line-height:1.8;
+
+}
+
+/* =========================
+CTA
+========================= */
+
+.cta{
+
+padding:0 8% 120px;
+
+}
+
+.cta-box{
+
+background:
+linear-gradient(
+135deg,
+rgba(124,58,237,0.2),
+rgba(6,182,212,0.15)
+);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
+padding:80px;
+
+border-radius:40px;
+
+text-align:center;
+
+backdrop-filter:blur(20px);
+
+}
+
+.cta-box h2{
+
+font-size:58px;
+
+font-weight:900;
+
+margin-bottom:25px;
+
+}
+
+.cta-box p{
+
+font-size:22px;
+
+line-height:1.8;
+
+color:#cbd5e1;
+
+max-width:900px;
+
+margin:auto;
+
+margin-bottom:40px;
+
+}
+
+/* =========================
+FOOTER
+========================= */
+
+footer{
+
+padding:40px;
+
+text-align:center;
+
+color:#64748b;
+
+border-top:
+1px solid rgba(255,255,255,0.06);
+
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:1100px){
 
 .hero{
 
@@ -295,29 +544,53 @@ flex-direction:column;
 
 text-align:center;
 
-padding:50px 25px;
-
 }
 
-.left h1{
+.hero-title{
 
 font-size:54px;
 
 }
 
-.mockup{
+.hero-description{
 
-width:100%;
+margin:auto;
 
-margin-top:50px;
+margin-bottom:40px;
 
 }
 
-.buttons{
+.hero-buttons{
 
 justify-content:center;
 
-flex-wrap:wrap;
+}
+
+}
+
+@media(max-width:700px){
+
+.hero-title{
+
+font-size:42px;
+
+}
+
+.section-title{
+
+font-size:38px;
+
+}
+
+.cta-box{
+
+padding:50px 30px;
+
+}
+
+.cta-box h2{
+
+font-size:40px;
 
 }
 
@@ -329,111 +602,222 @@ flex-wrap:wrap;
 
 <body>
 
-<section class="hero">
+<header>
 
-<div class="left">
-
-<div class="badge">
-🚀 Plataforma Global de Vendas Inteligentes
+<div class="logo">
+🚀 AutoVenda IA
 </div>
 
-<h1>
+<div class="nav">
 
-A Nova Geração de
+<a href="#">
+Início
+</a>
+
+<a href="#">
+Recursos
+</a>
+
+<a href="#">
+IA
+</a>
+
+<a href="#">
+Analytics
+</a>
+
+<button
+class="login-btn"
+onclick="window.location.href='/login'"
+>
+Entrar
+</button>
+
+</div>
+
+</header>
+
+<section class="hero">
+
+<div class="hero-left">
+
+<div class="badge">
+🌍 A nova geração de compras online no mundo
+</div>
+
+<h1 class="hero-title">
+
+Venda no WhatsApp com
 <span class="gradient">
-Compras Online no Mundo
+Inteligência Artificial
 </span>
+
+em escala global.
 
 </h1>
 
-<p>
+<p class="hero-description">
 
-Automatize vendas no WhatsApp com Inteligência Artificial ultra humana, analytics avançados, pagamentos inteligentes e experiência premium global.
+Automatize vendas, responda clientes em tempo real, envie produtos automaticamente, use analytics avançados e transforme o WhatsApp numa máquina de vendas premium.
 
 </p>
 
-<div class="buttons">
+<div class="hero-buttons">
 
-<a href="/login" class="btn primary">
-🚀 Entrar Plataforma
-</a>
-
-<a href="#stats" class="btn secondary">
-📈 Ver Recursos
-</a>
-
-</div>
-
-</div>
-
-<div class="right">
-
-<img
-class="mockup"
-src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1600&auto=format&fit=crop"
+<button
+class="primary-btn"
+onclick="window.location.href='/login'"
 >
+🚀 Começar Agora
+</button>
+
+<button class="secondary-btn">
+📊 Ver Demonstração
+</button>
+
+</div>
+
+</div>
+
+<div class="hero-right">
+
+<div class="dashboard-preview">
+
+<img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop">
+
+</div>
 
 </div>
 
 </section>
 
-<section class="stats" id="stats">
+<section class="features">
 
-<div class="card">
+<h2 class="section-title">
 
-<h2>
+Uma plataforma criada para
+<span class="gradient">
+vendas modernas
+</span>
+
+</h2>
+
+<p class="section-description">
+
+Tudo que você precisa para automatizar vendas globais com inteligência artificial, analytics e atendimento premium.
+
+</p>
+
+<div class="features-grid">
+
+<div class="feature-card">
+
+<div class="feature-icon">
 🤖
-</h2>
+</div>
+
+<h3>
+IA Ultra Humana
+</h3>
 
 <p>
-IA ultra humana que vende automaticamente no WhatsApp
+
+A IA conversa naturalmente, recomenda produtos e vende automaticamente como uma atendente real.
+
 </p>
 
 </div>
 
-<div class="card">
+<div class="feature-card">
 
-<h2>
-📊
-</h2>
+<div class="feature-icon">
+📈
+</div>
+
+<h3>
+Analytics Avançado
+</h3>
 
 <p>
-Analytics avançados em tempo real com gráficos inteligentes
+
+Visualize clientes, receita, produtos e conversas em tempo real num painel premium.
+
 </p>
 
 </div>
 
-<div class="card">
+<div class="feature-card">
 
-<h2>
+<div class="feature-icon">
+⚡
+</div>
+
+<h3>
+Tempo Real
+</h3>
+
+<p>
+
+Mensagens instantâneas, atualização automática e sincronização completa com WhatsApp.
+
+</p>
+
+</div>
+
+<div class="feature-card">
+
+<div class="feature-icon">
 🌍
-</h2>
+</div>
+
+<h3>
+Escala Global
+</h3>
 
 <p>
-Sistema global preparado para vender no mundo inteiro
+
+Venda para qualquer lugar do mundo usando automação inteligente e atendimento 24h.
+
 </p>
 
 </div>
-
-<div class="card">
-
-<h2>
-💳
-</h2>
-
-<p>
-Pagamentos inteligentes com pagamentos na entrega e pagamentos digitais
-</p>
 
 </div>
 
 </section>
 
-<div class="footer">
+<section class="cta">
+
+<div class="cta-box">
+
+<h2>
+
+Transforme o WhatsApp na sua maior máquina de vendas.
+
+</h2>
+
+<p>
+
+Automatize atendimento, aumente conversão e crie uma operação premium com inteligência artificial moderna.
+
+</p>
+
+<button
+class="primary-btn"
+onclick="window.location.href='/login'"
+>
+🚀 Entrar Plataforma
+</button>
+
+</div>
+
+</section>
+
+<footer>
 
 © 2026 AutoVenda IA • Plataforma Global Inteligente
 
-</div>
+</footer>
 
 </body>
 </html>
