@@ -494,6 +494,70 @@ app.delete(
 );
 
 /* ======================================
+UPDATE PRODUCT
+====================================== */
+
+app.put(
+  "/admin/products/:id",
+  authMiddleware,
+  async(req,res)=>{
+
+    try{
+
+      const { id } = req.params;
+
+      const {
+        name,
+        price,
+        description,
+        type
+      } = req.body;
+
+      const result =
+      await pool.query(
+
+        `
+        UPDATE products
+
+        SET
+        name=$1,
+        price=$2,
+        description=$3,
+        type=$4
+
+        WHERE id=$5
+
+        RETURNING *
+        `,
+
+        [
+          name,
+          price,
+          description,
+          type,
+          id
+        ]
+
+      );
+
+      return res.json({
+        success:true,
+        product:result.rows[0]
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
+
+  }
+);
+
+/* ======================================
 ANALYTICS
 ====================================== */
 
