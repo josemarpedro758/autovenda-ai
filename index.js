@@ -627,6 +627,48 @@ app.get(
 );
 
 /* ======================================
+CLIENTS
+====================================== */
+
+app.get(
+  "/admin/clients",
+
+  authMiddleware,
+
+  async(req,res)=>{
+
+    try{
+
+      const result =
+      await pool.query(
+
+        `
+        SELECT *
+
+        FROM clients
+
+        ORDER BY id DESC
+        `
+
+      );
+
+      return res.json(
+        result.rows
+      );
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
+
+  }
+);
+
+/* ======================================
 WEBHOOK WHATSAPP
 ====================================== */
 
