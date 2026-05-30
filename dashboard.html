@@ -1164,7 +1164,38 @@ window.location.href =
 
 }
 
-loadAnalytics();
+async function deleteProduct(id){
+
+  const confirmar =
+  confirm(
+    "Deseja excluir este produto?"
+  );
+
+  if(!confirmar){
+    return;
+  }
+
+  await fetch(
+
+    `/admin/products/${id}`,
+
+    {
+      method:"DELETE",
+
+      headers:{
+        Authorization:
+        `Bearer ${token}`
+      }
+    }
+
+  );
+
+  loadProducts();
+
+  loadAnalytics();
+
+}
+  loadAnalytics();
 
 loadProducts();
 
