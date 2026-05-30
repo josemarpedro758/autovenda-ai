@@ -1179,7 +1179,60 @@ window.location.href =
 "/login";
 
 }
+async function editProduct(id){
 
+  const novoNome =
+  prompt("Novo nome:");
+
+  if(!novoNome){
+    return;
+  }
+
+  const novoPreco =
+  prompt("Novo preço:");
+
+  const novaDescricao =
+  prompt("Nova descrição:");
+
+  const novoTipo =
+  prompt(
+    "Tipo (fisico ou digital):"
+  );
+
+  await fetch(
+
+    `/admin/products/${id}`,
+
+    {
+
+      method:"PUT",
+
+      headers:{
+
+        "Content-Type":
+        "application/json",
+
+        Authorization:
+        `Bearer ${token}`
+
+      },
+
+      body:JSON.stringify({
+
+        name:novoNome,
+        price:novoPreco,
+        description:novaDescricao,
+        type:novoTipo
+
+      })
+
+    }
+
+  );
+
+  loadProducts();
+
+}
 async function deleteProduct(id){
 
   const confirmar =
