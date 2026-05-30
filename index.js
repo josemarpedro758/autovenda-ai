@@ -132,6 +132,19 @@ async function createTables(){
       )
 
     `);
+    
+    try{
+
+  await pool.query(`
+    ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS type TEXT
+  `);
+
+}catch(error){
+
+  console.log(error);
+
+}
 
     await pool.query(`
 
