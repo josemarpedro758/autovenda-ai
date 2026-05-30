@@ -460,6 +460,40 @@ app.post(
 );
 
 /* ======================================
+DELETE PRODUCT
+====================================== */
+
+app.delete(
+  "/admin/products/:id",
+  authMiddleware,
+  async(req,res)=>{
+
+    try{
+
+      const { id } = req.params;
+
+      await pool.query(
+        "DELETE FROM products WHERE id=$1",
+        [id]
+      );
+
+      return res.json({
+        success:true
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
+
+  }
+);
+
+/* ======================================
 ANALYTICS
 ====================================== */
 
