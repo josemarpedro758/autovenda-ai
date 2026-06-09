@@ -644,6 +644,43 @@ app.get(
   }
 );
 
+app.get(
+  "/admin/clients",
+
+  authMiddleware,
+
+  async(req,res)=>{
+
+    try{
+
+      const clients =
+      await pool.query(
+
+        `
+        SELECT *
+        FROM clients
+
+        ORDER BY id DESC
+        `
+      );
+
+      return res.json({
+        success:true,
+        clients:clients.rows
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
+
+  }
+);
+
 /* ======================================
 CLIENTS
 ====================================== */
