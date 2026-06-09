@@ -132,6 +132,24 @@ async function createTables(){
       )
 
     `);
+
+    await pool.query(`
+
+  CREATE TABLE IF NOT EXISTS messages(
+
+    id SERIAL PRIMARY KEY,
+
+    number TEXT,
+
+    message TEXT,
+
+    response TEXT,
+
+    created_at TIMESTAMP DEFAULT NOW()
+
+  )
+
+`);
     
     try{
 
