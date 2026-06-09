@@ -843,6 +843,22 @@ Nenhum cliente encontrado
 
 </div>
 
+<br>
+
+<div class="panel">
+
+<div class="panel-title">
+📨 Histórico de Conversas
+</div>
+
+<div
+id="messagesHistory"
+class="messages"
+>
+</div>
+
+</div> 
+
 <script>
 
 const token =
@@ -1313,6 +1329,66 @@ async function deleteProduct(id){
 
   );
 
+  async function loadMessagesHistory(){
+
+  const response =
+  await fetch(
+
+    "/admin/messages",
+
+    {
+
+      headers:{
+        Authorization:
+        `Bearer ${token}`
+      }
+
+    }
+
+  );
+
+  const data =
+  await response.json();
+
+  const historyDiv =
+  document.getElementById(
+    "messagesHistory"
+  );
+
+  historyDiv.innerHTML = "";
+
+  data.messages.forEach(msg=>{
+
+    historyDiv.innerHTML +=
+
+    `
+    <div class="message">
+
+      <div class="message-number">
+
+      📱 ${msg.number}
+
+      </div>
+
+      <div class="message-user">
+
+      👤 ${msg.message}
+
+      </div>
+
+      <div class="message-ai">
+
+      🤖 ${msg.response}
+
+      </div>
+
+    </div>
+    `;
+
+  });
+
+}
+
   const clients =
   await response.json();
 
@@ -1410,12 +1486,13 @@ async function deleteProduct(id){
   });
 
 }
-  loadAnalytics();
+loadAnalytics();
 
 loadProducts();
 
 loadClients();
 
+loadMessagesHistory();
 </script>
 
 </body>
