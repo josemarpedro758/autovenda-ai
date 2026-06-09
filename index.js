@@ -724,6 +724,52 @@ app.get(
 );
 
 /* ======================================
+MESSAGES
+====================================== */
+
+app.get(
+  "/admin/messages",
+
+  authMiddleware,
+
+  async(req,res)=>{
+
+    try{
+
+      const messages =
+      await pool.query(
+
+        `
+        SELECT *
+
+        FROM messages
+
+        ORDER BY id DESC
+
+        LIMIT 100
+        `
+
+      );
+
+      return res.json({
+        success:true,
+        messages:
+        messages.rows
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
+
+  }
+);
+
+/* ======================================
 WEBHOOK WHATSAPP
 ====================================== */
 
