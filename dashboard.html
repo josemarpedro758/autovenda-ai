@@ -1283,9 +1283,71 @@ async function deleteProduct(id){
   loadAnalytics();
 
 }
+
+ async function loadClients(){
+
+  const response =
+  await fetch(
+
+    "/admin/clients",
+
+    {
+
+      headers:{
+        Authorization:
+        `Bearer ${token}`
+      }
+
+    }
+
+  );
+
+  const clients =
+  await response.json();
+
+  const clientsDiv =
+  document.getElementById(
+    "clients"
+  );
+
+  clientsDiv.innerHTML = "";
+
+  if(clients.length === 0){
+
+    clientsDiv.innerHTML =
+    "Nenhum cliente encontrado";
+
+    return;
+
+  }
+
+  clients.forEach(client=>{
+
+    clientsDiv.innerHTML +=
+
+    `
+    <div
+    style="
+    padding:15px;
+    margin-bottom:10px;
+    background:rgba(255,255,255,.05);
+    border-radius:12px;
+    "
+    >
+
+      📱 ${client.number}
+
+    </div>
+    `;
+
+  });
+
+}
   loadAnalytics();
 
 loadProducts();
+
+loadClients();
 
 </script>
 
