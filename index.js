@@ -819,27 +819,6 @@ app.post(
 
       await pool.query(
 
-  `
-  INSERT INTO messages
-  (
-    number,
-    message,
-    response
-  )
-
-  VALUES($1,$2,$3)
-  `,
-
-  [
-    number,
-    message,
-    aiMessage
-  ]
-
-);
-
-      await pool.query(
-
         `
         INSERT INTO clients
         (
@@ -975,6 +954,27 @@ ${memory}
       .content;
 
       memory += `\nIA: ${aiMessage}`;
+
+        await pool.query(
+
+  `
+  INSERT INTO messages
+  (
+    number,
+    message,
+    response
+  )
+
+  VALUES($1,$2,$3)
+  `,
+
+  [
+    number,
+    message,
+    aiMessage
+  ]
+
+);
 
       await pool.query(
 
