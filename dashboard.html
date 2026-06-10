@@ -1412,16 +1412,30 @@ async function deleteProduct(id){
       border:1px solid rgba(255,255,255,0.06);
       ">
 
-      <b>📱 ${client.number}</b>
+ <b>📱 ${client.number}</b>
 
-      <br><br>
+<br><br>
 
-      <small>
+<div style="
+padding:8px 12px;
+display:inline-block;
+border-radius:999px;
+background:rgba(0,255,170,0.15);
+margin-bottom:12px;
+font-weight:700;
+">
 
-      ${client.memory || "Sem histórico"}
+${client.status || "Novo"}
 
-      </small>
+</div>
 
+<br>
+
+<small>
+
+${client.memory || "Sem histórico"}
+
+</small>
       </div>
 
     `;
