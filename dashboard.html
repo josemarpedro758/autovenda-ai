@@ -839,7 +839,9 @@ class="input"
 placeholder="🔍 Procurar cliente..."
 onkeyup="filterClients()"
 >
- 
+
+<br><br>
+
 <div id="clients">
 
 Nenhum cliente encontrado
@@ -1318,26 +1320,7 @@ async function deleteProduct(id){
   loadAnalytics();
 
 }
-
- async function loadClients(){
-
-  const response =
-  await fetch(
-
-    "/admin/clients",
-
-    {
-
-      headers:{
-        Authorization:
-        `Bearer ${token}`
-      }
-
-    }
-
-  );
-
-  async function loadMessagesHistory(){
+    async function loadMessagesHistory(){
 
   const response =
   await fetch(
@@ -1389,48 +1372,6 @@ async function deleteProduct(id){
       🤖 ${msg.response}
 
       </div>
-
-    </div>
-    `;
-
-  });
-
-}
-
-  const clients =
-  await response.json();
-
-  const clientsDiv =
-  document.getElementById(
-    "clients"
-  );
-
-  clientsDiv.innerHTML = "";
-
-  if(clients.length === 0){
-
-    clientsDiv.innerHTML =
-    "Nenhum cliente encontrado";
-
-    return;
-
-  }
-
-  clients.forEach(client=>{
-
-    clientsDiv.innerHTML +=
-
-    `
-    <div
-    style="
-    padding:15px;
-    margin-bottom:10px;
-    background:rgba(255,255,255,.05);
-    border-radius:12px;
-    "
-    >
-
-      📱 ${client.number}
 
     </div>
     `;
