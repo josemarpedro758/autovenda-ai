@@ -831,7 +831,15 @@ onclick="createProduct()"
 <div class="panel-title">
 👥 Clientes
 </div>
-
+ 
+<input
+type="text"
+id="searchClient"
+class="input"
+placeholder="🔍 Procurar cliente..."
+onkeyup="filterClients()"
+>
+ 
 <div id="clients">
 
 Nenhum cliente encontrado
@@ -1459,9 +1467,11 @@ async function deleteProduct(id){
 
   data.clients.forEach(client=>{
 
-    clientsDiv.innerHTML += `
+   clientsDiv.innerHTML += `
 
-      <div style="
+      <div
+      class="client-card"
+      style="
       padding:15px;
       margin-bottom:10px;
       border-radius:12px;
@@ -1493,6 +1503,45 @@ loadProducts();
 loadClients();
 
 loadMessagesHistory();
+ 
+function filterClients(){
+
+  const input =
+  document.getElementById(
+    "searchClient"
+  );
+
+  const filter =
+  input.value.toLowerCase();
+
+  const clients =
+  document.querySelectorAll(
+    ".client-card"
+  );
+
+  clients.forEach(client=>{
+
+    const text =
+    client.innerText.toLowerCase();
+
+    if(
+      text.includes(filter)
+    ){
+
+      client.style.display =
+      "block";
+
+    }else{
+
+      client.style.display =
+      "none";
+
+    }
+
+  });
+
+}
+ 
 </script>
 
 </body>
