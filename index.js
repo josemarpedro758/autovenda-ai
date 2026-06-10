@@ -179,7 +179,21 @@ async function createTables(){
       )
 
     `);
+try{
 
+  await pool.query(`
+
+    ALTER TABLE clients
+
+    ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Novo'
+
+  `);
+
+}catch(error){
+
+  console.log(error);
+
+}
     console.log(
       "Banco conectado 🚀"
     );
