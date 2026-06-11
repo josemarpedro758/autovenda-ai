@@ -1506,7 +1506,7 @@ function filterClients(){
   });
 
 }
- async function changeStatus(number){
+async function changeStatus(number){
 
   const status =
   prompt(
@@ -1517,9 +1517,36 @@ function filterClients(){
     return;
   }
 
-  alert(
-    `Status escolhido: ${status}`
+  await fetch(
+
+    "/admin/clients/status",
+
+    {
+
+      method:"PUT",
+
+      headers:{
+
+        "Content-Type":
+        "application/json",
+
+        Authorization:
+        `Bearer ${token}`
+
+      },
+
+      body:JSON.stringify({
+
+        number,
+        status
+
+      })
+
+    }
+
   );
+
+  loadClients();
 
 }
  
