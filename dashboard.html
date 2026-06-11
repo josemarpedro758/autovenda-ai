@@ -1430,6 +1430,7 @@ ${client.status || "Novo"}
 </div>
 
 <button
+onclick="changeStatus('${client.number}')"
 style="
 padding:8px 14px;
 border:none;
@@ -1503,6 +1504,22 @@ function filterClients(){
     }
 
   });
+
+}
+ async function changeStatus(number){
+
+  const status =
+  prompt(
+    "Novo status:\n\nNovo\nInteressado\nNegociação\nComprou\nPerdido"
+  );
+
+  if(!status){
+    return;
+  }
+
+  alert(
+    `Status escolhido: ${status}`
+  );
 
 }
  
