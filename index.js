@@ -737,6 +737,53 @@ app.get(
   }
 );
 
+app.put(
+  "/admin/clients/status",
+
+  authMiddleware,
+
+  async(req,res)=>{
+
+    try{
+
+      const {
+        number,
+        status
+      } = req.body;
+
+      await pool.query(
+
+        `
+        UPDATE clients
+
+        SET status=$1
+
+        WHERE number=$2
+        `,
+
+        [
+          status,
+          number
+        ]
+
+      );
+
+      return res.json({
+        success:true
+      });
+
+    }catch(error){
+
+      return res.status(500).json({
+        success:false,
+        error:error.message
+      });
+
+    }
+
+  }
+);
+
 /* ======================================
 MESSAGES
 ====================================== */
