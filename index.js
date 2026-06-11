@@ -206,6 +206,22 @@ try{
 
 }
 
+try{
+
+  await pool.query(`
+
+    ALTER TABLE clients
+
+    ADD COLUMN IF NOT EXISTS note TEXT
+
+  `);
+
+}catch(error){
+
+  console.log(error);
+
+}
+
 createTables();
 
 /* ======================================
