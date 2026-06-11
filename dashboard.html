@@ -1416,19 +1416,51 @@ async function deleteProduct(id){
 
 <br><br>
 
-<div style="
+<div
+style="
 padding:8px 12px;
 display:inline-block;
 border-radius:999px;
-background:rgba(0,255,170,0.15);
 margin-bottom:12px;
 font-weight:700;
-">
+
+background:${
+client.status === "Novo"
+? "rgba(34,197,94,.2)"
+
+: client.status === "Interessado"
+? "rgba(234,179,8,.2)"
+
+: client.status === "Negociação"
+? "rgba(59,130,246,.2)"
+
+: client.status === "Comprou"
+? "rgba(0,255,170,.2)"
+
+: "rgba(239,68,68,.2)"
+};
+
+color:${
+client.status === "Novo"
+? "#22c55e"
+
+: client.status === "Interessado"
+? "#eab308"
+
+: client.status === "Negociação"
+? "#3b82f6"
+
+: client.status === "Comprou"
+? "#00ffbf"
+
+: "#ef4444"
+};
+"
+>
 
 ${client.status || "Novo"}
 
 </div>
-
 <button
 onclick="changeStatus('${client.number}')"
 style="
