@@ -977,6 +977,33 @@ document.getElementById(
 
 createChart(data);
 
+ document.getElementById(
+"salesFunnel"
+).innerHTML = `
+
+🟢 Novo: ${
+data.newClients || 0
+}
+
+<br><br>
+
+🟡 Interessado: ${
+data.interestedClients || 0
+}
+
+<br><br>
+
+🔵 Negociação: ${
+data.negotiationClients || 0
+}
+
+<br><br>
+
+🟣 Fechado: ${
+data.closedClients || 0
+}
+
+`;
 }
 
 function createChart(data){
