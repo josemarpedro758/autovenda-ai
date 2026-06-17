@@ -622,7 +622,25 @@ app.get(
       await pool.query(
         "SELECT COUNT(*) FROM products"
       );
+const newClients =
+await pool.query(
+  "SELECT COUNT(*) FROM clients WHERE status='Novo'"
+);
 
+const interestedClients =
+await pool.query(
+  "SELECT COUNT(*) FROM clients WHERE status='Interessado'"
+);
+
+const negotiationClients =
+await pool.query(
+  "SELECT COUNT(*) FROM clients WHERE status='Negociação'"
+);
+
+const closedClients =
+await pool.query(
+  "SELECT COUNT(*) FROM clients WHERE status='Fechado'"
+);
       const clientsCount =
       await pool.query(
         "SELECT COUNT(*) FROM clients"
@@ -656,7 +674,26 @@ app.get(
         Number(
           productsCount.rows[0].count
         ) * 250,
+        
+newClients:
+Number(
+  newClients.rows[0].count
+),
 
+interestedClients:
+Number(
+  interestedClients.rows[0].count
+),
+
+negotiationClients:
+Number(
+  negotiationClients.rows[0].count
+),
+
+closedClients:
+Number(
+  closedClients.rows[0].count
+),
         recentProducts:
         recentProducts.rows
 
